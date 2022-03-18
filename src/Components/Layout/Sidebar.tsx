@@ -12,14 +12,24 @@ import { Storage as StorageIcon } from "@mui/icons-material";
 import { SidebarProps } from "./types";
 import React, { FC } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
+import { createMySQLConnection } from "../../utils/connections";
+import { Connection } from "../../Context/ConnectionsContext/types";
 
 export const sidebarWidth = 240;
 
 const SidebarContent = () => {
-  const { state, toggleAddConnectionModal } = useConnectionsContext();
+  const { state, toggleAddConnectionModal, setActiveConnection } =
+    useConnectionsContext();
 
   const onNewConnectionClick = () => {
     toggleAddConnectionModal();
+  };
+
+  const onItemClick = (connection: Connection) => {
+    setActiveConnection(
+      createMySQLConnection(connection.connectionObject),
+      connection
+    );
   };
 
   return (
@@ -31,8 +41,12 @@ const SidebarContent = () => {
       </Toolbar>
       <Divider />
       <List>
-        {state.connections.map((connection) => (
-          <ListItem button key={connection.connectionId}>
+        {state.availableConnections.map((connection) => (
+          <ListItem
+            button
+            key={connection.connectionId}
+            onClick={() => onItemClick(connection)}
+          >
             <ListItemIcon>
               <StorageIcon />
             </ListItemIcon>

@@ -7,7 +7,9 @@ function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: true, // <--- flag
+      nodeIntegrationInWorker: true, // <---  for web workers
+      contextIsolation: false,
     },
     show: false,
   });

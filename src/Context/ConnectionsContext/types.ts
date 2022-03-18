@@ -1,22 +1,39 @@
+import { ConnectionOptions as MySQLConnectionOptions, Connection as MySQLConnection } from "mysql";
+
 export type ConnectionsState = {
-    connections: Connection[];
+    availableConnections: Connection[];
     showAddConnectionModal: boolean;
+    activeConnection: ActiveConnection | null
 }
 
 export type Connection = {
     connectionId?: string;
     name: string;
     type: ConnectionTypes;
-    connectionString: string;
+    connectionObject: ConnectionObject;
 }
+
+export type ConnectionObject = MySQLConnectionOptions;
+
+export type ActiveConnection = Connection & {
+    connection: ConnectionInterfacesTypes
+};
 
 export type ConnectionsStateHook = {
     state: ConnectionsState,
     addNewConnection: (connection: Connection) => void;
     removeConnection: (connectionId: string) => void;
     toggleAddConnectionModal: () => void;
+    setActiveConnection: (connection: ConnectionInterfacesTypes, connectionData: Connection) => void;
 }
 
-export type ConnectionReducerAction = { type: string; connection?: Connection; connectionId?: string };
+export type ConnectionReducerAction = {
+    type: string;
+    connection?: Connection;
+    connectionId?: string;
+    activeConnection?: ConnectionInterfacesTypes;
+    connectionData?: Connection;
+};
 
+export type ConnectionInterfacesTypes = MySQLConnection | null;
 export type ConnectionTypes = "MYSQL";

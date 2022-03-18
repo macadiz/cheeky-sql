@@ -8,7 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { buildMySQLConnectionString } from "../../utils/connections";
+import { buildMySQLConnectionConfig } from "../../utils/connections";
 import { Connection } from "../../Context/ConnectionsContext/types";
 import { AddConnectionFormState } from "./types";
 
@@ -43,7 +43,7 @@ const AddConnectionDialog = () => {
     const newConnection: Connection = {
       name: connectionName,
       type: "MYSQL",
-      connectionString: buildMySQLConnectionString(
+      connectionObject: buildMySQLConnectionConfig(
         host,
         port,
         userName,
@@ -70,7 +70,7 @@ const AddConnectionDialog = () => {
       <DialogTitle>Add new connection</DialogTitle>
       <DialogContent>
         <Grid container>
-          <Grid className={classes.gridColumn} xs={12} sm={6}>
+          <Grid item className={classes.gridColumn} xs={12} sm={6}>
             <TextField
               autoFocus
               margin="dense"
@@ -82,7 +82,7 @@ const AddConnectionDialog = () => {
               value={formState.connectionName}
             />
           </Grid>
-          <Grid className={classes.gridColumn} xs={12} sm={6}>
+          <Grid item className={classes.gridColumn} xs={12} sm={6}>
             <TextField
               margin="dense"
               id="host"
@@ -93,7 +93,7 @@ const AddConnectionDialog = () => {
               value={formState.host}
             />
           </Grid>
-          <Grid className={classes.gridColumn} xs={12} sm={6}>
+          <Grid item className={classes.gridColumn} xs={12} sm={6}>
             <TextField
               margin="dense"
               id="port"
@@ -102,11 +102,10 @@ const AddConnectionDialog = () => {
               variant="standard"
               type="number"
               onChange={(event) => onFormChange(event, "port")}
-              defaultValue={""}
-              value={formState.port}
+              defaultValue={formState.port}
             />
           </Grid>
-          <Grid className={classes.gridColumn} xs={12} sm={6}>
+          <Grid item className={classes.gridColumn} xs={12} sm={6}>
             <TextField
               margin="dense"
               id="user"
@@ -117,7 +116,7 @@ const AddConnectionDialog = () => {
               value={formState.userName}
             />
           </Grid>
-          <Grid className={classes.gridColumn} xs={12} sm={6}>
+          <Grid item className={classes.gridColumn} xs={12} sm={6}>
             <TextField
               margin="dense"
               id="password"
@@ -129,7 +128,7 @@ const AddConnectionDialog = () => {
               value={formState.password}
             />
           </Grid>
-          <Grid className={classes.gridColumn} xs={12} sm={6}>
+          <Grid item className={classes.gridColumn} xs={12} sm={6}>
             <TextField
               margin="dense"
               id="database"

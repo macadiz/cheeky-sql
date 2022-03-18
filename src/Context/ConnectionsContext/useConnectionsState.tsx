@@ -4,32 +4,41 @@ import {
   ConnectionsStateHook,
   Connection,
   ConnectionReducerAction,
+  ConnectionInterfacesTypes,
 } from "./types";
 import { v4 as getUUIDD } from "uuid";
 import constants from "./constants";
 
 const initialState: ConnectionsState = {
-  connections: [],
+  availableConnections: [],
   showAddConnectionModal: false,
+  activeConnection: null,
 };
 
 const reducerFunction = (
   state: ConnectionsState,
   action: ConnectionReducerAction
 ) => {
-  const { ADD_CONNECTION, REMOVE_CONNECTION, TOGGLE_ADD_CONNECTION_DIALOG } =
-    constants.reducerActions;
+  const {
+    ADD_CONNECTION,
+    REMOVE_CONNECTION,
+    TOGGLE_ADD_CONNECTION_DIALOG,
+    SET_ACTIVE_CONNECTION,
+  } = constants.reducerActions;
   switch (action.type) {
     case ADD_CONNECTION: {
       return {
         ...state,
-        connections: [...state.connections, action.connection],
+        availableConnections: [
+          ...state.availableConnections,
+          action.connection,
+        ],
       } as ConnectionsState;
     }
     case REMOVE_CONNECTION: {
       return {
         ...state,
-        connections: [...state.connections].filter(
+        availableConnections: [...state.availableConnections].filter(
           (connection) => connection.connectionId !== action.connectionId
         ),
       } as ConnectionsState;
@@ -38,6 +47,15 @@ const reducerFunction = (
       return {
         ...state,
         showAddConnectionModal: !state.showAddConnectionModal,
+      } as ConnectionsState;
+    }
+    case SET_ACTIVE_CONNECTION: {
+      return {
+        ...state,
+        activeConnection: {
+          ...action.connectionData,
+          connection: action.activeConnection,
+        },
       } as ConnectionsState;
     }
     default: {
@@ -68,11 +86,23 @@ const useConnectionsState = (): ConnectionsStateHook => {
     dispatch({ type: constants.reducerActions.TOGGLE_ADD_CONNECTION_DIALOG });
   };
 
+  const setActiveConnection = (
+    activeConnection: ConnectionInterfacesTypes,
+    connectionData: Connection
+  ) => {
+    dispatch({
+      type: constants.reducerActions.SET_ACTIVE_CONNECTION,
+      activeConnection,
+      connectionData,
+    });
+  };
+
   return {
     state,
     addNewConnection,
     removeConnection,
     toggleAddConnectionModal,
+    setActiveConnection,
   };
 };
 

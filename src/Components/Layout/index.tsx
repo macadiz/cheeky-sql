@@ -1,4 +1,11 @@
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Button,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import {
   Menu as MenuIcon,
   CloudOff as CloudOffIcon,
@@ -7,6 +14,8 @@ import React, { FC, useState } from "react";
 import Sidebar, { sidebarWidth } from "./Sidebar";
 import AddConnectionDialog from "../AddConnectionDialog";
 import { makeStyles } from "@mui/styles";
+import { useConnectionsContext } from "../../Context/ConnectionsContext";
+import Workspace from "../Workspace";
 
 const useStyles = makeStyles({
   mainContent: {
@@ -20,6 +29,8 @@ const Layout: FC = () => {
   const [sidebarOpen, setSiedbarOpen] = useState(false);
 
   const classes = useStyles();
+
+  const { state } = useConnectionsContext();
 
   const handleSidebarToggle = () => {
     setSiedbarOpen(!sidebarOpen);
@@ -70,8 +81,14 @@ const Layout: FC = () => {
         >
           <Toolbar />
           <div className={classes.mainContent}>
-            <CloudOffIcon />
-            Disconnected...
+            {state.activeConnection ? (
+              <Workspace />
+            ) : (
+              <>
+                <CloudOffIcon />
+                Disconnected...
+              </>
+            )}
           </div>
         </Box>
       </Box>
