@@ -1,4 +1,14 @@
-import { Button, IconButton, Tab, Tabs } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tabs,
+} from "@mui/material";
 import { Add as AddIcon, Close as TimesIcon } from "@mui/icons-material";
 import React, { FC } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
@@ -47,20 +57,23 @@ const Workspace: FC = () => {
   const {
     state: workspaceState,
     setSelectedTab,
+    setQueryResults,
     setTabQuery,
     createNewTab,
     removeTab,
   } = useWorkspaceContext();
 
-  const onExecuteQueryClick = () => {
+  const onExecuteQueryClick = async () => {
     const activeConnection =
       connectionState.activeConnection as ActiveConnection;
 
-    executeQuery(
+    const results = await executeQuery(
       activeConnection.type,
       activeConnection.connection,
       workspaceState.selectedTab?.SQLQuery ?? ""
     );
+
+    setQueryResults(results);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -117,6 +130,48 @@ const Workspace: FC = () => {
           value={workspaceState.selectedTab?.SQLQuery}
         ></textarea>
         <Button onClick={onExecuteQueryClick}>Execute</Button>
+        {workspaceState.selectedTab?.resultsToDisplay &&
+        workspaceState.selectedTab?.resultsToDisplay.length > 0 ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                {workspaceState.selectedTab?.resultsToDisplay[0].map(
+                  (cell, columnIndex) => {
+                    return (
+                      <TableCell
+                        component="th"
+                        key={`results-cell-0-${columnIndex}`}
+                      >
+                        {cell as string}
+                      </TableCell>
+                    );
+                  }
+                )}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {workspaceState.selectedTab?.resultsToDisplay
+                .slice(1)
+                .map((row, rowIndex) => {
+                  return (
+                    <TableRow key={`results-row-${rowIndex}`}>
+                      {row.map((cell, columnIndex) => {
+                        return (
+                          <TableCell
+                            key={`results-cell-${rowIndex}-${columnIndex}`}
+                          >
+                            {cell as string}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

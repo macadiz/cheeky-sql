@@ -1,4 +1,4 @@
-import { ConnectionConfig as MySQLConnectionConfig, Connection as MySQLConnection } from "mysql";
+import { ConnectionConfig as MySQLConnectionConfig, Connection as MySQLConnection, FieldInfo as MySQLFieldInfo } from "mysql";
 import { ConnectionInterfacesTypes, ConnectionObject, ConnectionTypes } from "../Context/ConnectionsContext/types";
 
 const mysql = window.require('mysql');
@@ -11,6 +11,27 @@ export const buildMySQLConnectionConfig = (host: string, port: number, userName:
         password,
         database
     };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const buildMySQLQueryResult = (results: any[], fields: MySQLFieldInfo[] | undefined) => {
+    const tableMatrix = [];
+    const tableHeader: string[] = [];
+
+    if (fields) {
+        fields.forEach((field) => tableHeader.push(field.name));
+        tableMatrix.push(tableHeader);
+
+        results.forEach((result) => {
+            const tableRow = Array(tableHeader.length);
+            Object.keys(result).forEach((key) => {
+                const keyIndex = tableHeader.findIndex((header) => header === key);
+                tableRow[keyIndex] = result[key];
+            });
+            tableMatrix.push(tableRow);
+        });
+    }
+    return tableMatrix;
 }
 
 export const createMySQLConnection = (connectionConfig: MySQLConnectionConfig): MySQLConnection => {
@@ -45,23 +66,25 @@ const executeMySQLQuery = async (connection: MySQLConnection, query: string) => 
     });
 
     if (await connectionPromise) {
-        const queryPromise = new Promise<any>(() => {
+        const queryPromise = new Promise<any>((resolve, reject) => {
             connection.query({
                 sql: query
             }, (error, results, fields) => {
-                console.log(error, results, fields);
+                if (error) {
+                    reject(error);
+                }
+                resolve(buildMySQLQueryResult(results, fields))
             })
         });
 
-        queryPromise.then();
+        return await queryPromise;
     }
 }
 
-export const executeQuery = (connectionType: ConnectionTypes, connection: ConnectionInterfacesTypes, query: string) => {
+export const executeQuery = async (connectionType: ConnectionTypes, connection: ConnectionInterfacesTypes, query: string) => {
     switch (connectionType) {
         case 'MYSQL': {
-            executeMySQLQuery(connection as MySQLConnection, query);
-            break;
+            return await executeMySQLQuery(connection as MySQLConnection, query);
         }
     }
 }
