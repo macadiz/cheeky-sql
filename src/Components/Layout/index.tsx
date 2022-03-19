@@ -9,6 +9,7 @@ import AddConnectionDialog from "../AddConnectionDialog";
 import { makeStyles } from "@mui/styles";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import Workspace from "../Workspace";
+import AlertDialog from "../AlertDialog";
 
 const useStyles = makeStyles({
   mainContent: {
@@ -86,6 +87,7 @@ const Layout: FC = () => {
         </Box>
       </Box>
       <AddConnectionDialog />
+      <AlertDialog />
     </>
   );
 };

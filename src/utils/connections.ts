@@ -1,5 +1,5 @@
 import { ConnectionConfig as MySQLConnectionConfig, Connection as MySQLConnection } from "mysql";
-import { ConnectionInterfacesTypes, ConnectionTypes } from "../Context/ConnectionsContext/types";
+import { ConnectionInterfacesTypes, ConnectionObject, ConnectionTypes } from "../Context/ConnectionsContext/types";
 
 const mysql = window.require('mysql');
 
@@ -13,10 +13,24 @@ export const buildMySQLConnectionConfig = (host: string, port: number, userName:
     };
 }
 
-export const createMySQLConnection = (connectionConfig: MySQLConnectionConfig) => {
+export const createMySQLConnection = (connectionConfig: MySQLConnectionConfig): MySQLConnection => {
     const connection = mysql.createConnection(connectionConfig);
 
     return connection;
+}
+
+export const testMySQLConnection = async (connection: MySQLConnection) => {
+    const connectionPromise = new Promise<boolean>((resolve, reject) => {
+        connection.connect((error) => {
+            if (error) {
+                reject(error);
+            }
+            resolve(true);
+        });
+    });
+
+    return await connectionPromise;
+
 }
 
 const executeMySQLQuery = async (connection: MySQLConnection, query: string) => {
@@ -47,6 +61,16 @@ export const executeQuery = (connectionType: ConnectionTypes, connection: Connec
     switch (connectionType) {
         case 'MYSQL': {
             executeMySQLQuery(connection as MySQLConnection, query);
+            break;
+        }
+    }
+}
+
+export const TestConnectionConfig = async (connectionType: ConnectionTypes, connectionConfig: ConnectionObject) => {
+    switch (connectionType) {
+        case 'MYSQL': {
+            const connection = mysql.createConnection(connectionConfig);
+            return await testMySQLConnection(connection as MySQLConnection);
         }
     }
 }
