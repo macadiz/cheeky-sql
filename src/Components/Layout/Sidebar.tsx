@@ -14,12 +14,15 @@ import React, { FC } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { createMySQLConnection } from "../../utils/connections";
 import { Connection } from "../../Context/ConnectionsContext/types";
+import { useWorkspaceContext } from "../../Context/WorkspaceContext";
 
 export const sidebarWidth = 240;
 
 const SidebarContent = () => {
   const { state, toggleAddConnectionModal, setActiveConnection } =
     useConnectionsContext();
+
+  const { createNewTab } = useWorkspaceContext();
 
   const onNewConnectionClick = () => {
     toggleAddConnectionModal();
@@ -30,6 +33,7 @@ const SidebarContent = () => {
       createMySQLConnection(connection.connectionObject),
       connection
     );
+    createNewTab();
   };
 
   return (
