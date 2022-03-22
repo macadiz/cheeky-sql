@@ -12,9 +12,9 @@ import { Storage as StorageIcon } from "@mui/icons-material";
 import { SidebarProps } from "./types";
 import React, { FC } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
-import { createMySQLConnection } from "../../utils/connections";
 import { Connection } from "../../Context/ConnectionsContext/types";
 import { useWorkspaceContext } from "../../Context/WorkspaceContext";
+import { createSQLInterface } from "../../utils/connections";
 
 export const sidebarWidth = 240;
 
@@ -28,9 +28,10 @@ const SidebarContent = () => {
     toggleAddConnectionModal();
   };
 
-  const onItemClick = (connection: Connection) => {
+  const onItemClick = async (connection: Connection) => {
+    const connectionInterface = await createSQLInterface("MYSQL", connection.connectionObject);
     setActiveConnection(
-      createMySQLConnection(connection.connectionObject),
+      connectionInterface,
       connection
     );
     createNewTab();

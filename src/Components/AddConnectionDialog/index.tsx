@@ -9,12 +9,12 @@ import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
-  buildMySQLConnectionConfig,
   TestConnectionConfig,
 } from "../../utils/connections";
 import { Connection } from "../../Context/ConnectionsContext/types";
 import { AddConnectionFormState } from "./types";
 import { useApplicationContext } from "../../Context/ApplicationContext";
+import { buildMySQLConnectionConfig } from "../../utils/mysqlConnection";
 
 const useStyles = makeStyles({
   gridColumn: {
