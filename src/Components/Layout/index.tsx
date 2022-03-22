@@ -20,14 +20,14 @@ const useStyles = makeStyles({
 });
 
 const Layout: FC = () => {
-  const [sidebarOpen, setSiedbarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const classes = useStyles();
 
   const { state } = useConnectionsContext();
 
   const handleSidebarToggle = () => {
-    setSiedbarOpen(!sidebarOpen);
+    setSidebarOpen(!sidebarOpen);
   };
 
   return (
