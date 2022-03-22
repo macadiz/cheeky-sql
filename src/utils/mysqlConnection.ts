@@ -26,28 +26,20 @@ export const buildMySQLConnectionConfig = (
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const buildMySQLQueryResult = (
-  results: any[],
-  fields: MySQLFieldInfo[] | undefined
-) => {
-  const tableMatrix = [];
-  const tableHeader: string[] = [];
+const buildMySQLQueryResult = (resultArray: any[], fields: MySQLFieldInfo[] | undefined): any[] => {
 
-  if (fields) {
-    fields.forEach((field) => tableHeader.push(field.name));
-    tableMatrix.push(tableHeader);
+    if (fields) {
+      const tableHeader: string[] = fields.map((field) => field.name);
 
-    results.forEach((result) => {
-      const tableRow = Array(tableHeader.length);
-      Object.keys(result).forEach((key) => {
-        const keyIndex = tableHeader.findIndex((header) => header === key);
-        tableRow[keyIndex] = result[key];
+      const dataRows = resultArray.map((resultObject) => {
+          const dataRow = tableHeader.map(columnName => resultObject[columnName]);
+        return dataRow;
       });
-      tableMatrix.push(tableRow);
-    });
-  }
-  return tableMatrix;
-};
+
+      return [tableHeader, ...dataRows];
+    }
+    return [];
+}
 
 export const executeMySQLQuery = async (
   connectionPool: MySQLPool,
