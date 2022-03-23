@@ -3,13 +3,15 @@ const path = require("path");
 const { app, BrowserWindow } = require("electron");
 const isDev = require("electron-is-dev");
 
+require('@electron/remote/main').initialize()
+
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     webPreferences: {
-      nodeIntegration: true, // <--- flag
-      nodeIntegrationInWorker: true, // <---  for web workers
-      contextIsolation: false,
+      nodeIntegration: true,
+      enableRemoteModule:true,
+      contextIsolation: false
     },
     show: false,
   });
@@ -28,6 +30,8 @@ function createWindow() {
   if (isDev) {
     win.webContents.openDevTools({ mode: "right" });
   }
+
+  require("@electron/remote/main").enable(win.webContents)
 }
 
 // This method will be called when Electron has finished

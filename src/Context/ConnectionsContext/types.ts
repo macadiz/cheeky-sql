@@ -21,15 +21,16 @@ export type ActiveConnection = Connection & {
 
 export type ConnectionsStateHook = {
     state: ConnectionsState;
-    addNewConnection: (connection: Connection) => void;
+    addNewConnection: (connection: Connection | Connection[]) => void;
     removeConnection: (connectionId: string) => void;
     toggleAddConnectionModal: () => void;
     setActiveConnection: (connection: ConnectionInterfacesTypes, connectionData: Connection) => void;
+    setAvailableConnections: (connection: Connection[]) => void;
 }
 
 export type ConnectionReducerAction = {
     type: string;
-    connection?: Connection;
+    connection?: Connection[];
     connectionId?: string;
     activeConnection?: ConnectionInterfacesTypes;
     connectionData?: Connection;

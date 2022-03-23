@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import {
   ConnectionsState,
   ConnectionsStateHook,
@@ -24,6 +24,7 @@ const reducerFunction = (
     REMOVE_CONNECTION,
     TOGGLE_ADD_CONNECTION_DIALOG,
     SET_ACTIVE_CONNECTION,
+    SET_AVAILABLE_CONNECTIONS
   } = constants.reducerActions;
   switch (action.type) {
     case ADD_CONNECTION: {
@@ -31,8 +32,14 @@ const reducerFunction = (
         ...state,
         availableConnections: [
           ...state.availableConnections,
-          action.connection,
+          ...(action.connection ?? []),
         ],
+      } as ConnectionsState;
+    }
+    case SET_AVAILABLE_CONNECTIONS: {
+      return {
+        ...state,
+        availableConnections: action.connection,
       } as ConnectionsState;
     }
     case REMOVE_CONNECTION: {
@@ -67,11 +74,21 @@ const reducerFunction = (
 const useConnectionsState = (): ConnectionsStateHook => {
   const [state, dispatch] = useReducer(reducerFunction, initialState);
 
-  const addNewConnection = (connection: Connection) => {
-    connection.connectionId = getUUIDD();
+  const addNewConnection = (connection: Connection | Connection[]) => {
+    let connectionsToAdd: Connection[] = [];
+    if (Array.isArray(connection)) {
+      connectionsToAdd = connection.map((connection) => ({
+        ...connection,
+        connectionId: getUUIDD(),
+      }));
+    } else {
+      connection.connectionId = getUUIDD();
+      connectionsToAdd.push(connection);
+    }
+
     dispatch({
       type: constants.reducerActions.ADD_CONNECTION,
-      connection,
+      connection: connectionsToAdd,
     });
   };
 
@@ -97,12 +114,20 @@ const useConnectionsState = (): ConnectionsStateHook => {
     });
   };
 
+  const setAvailableConnections = (connection: Connection[]) => {
+    dispatch({
+      type: constants.reducerActions.SET_AVAILABLE_CONNECTIONS,
+      connection,
+    });
+  };
+
   return {
     state,
     addNewConnection,
     removeConnection,
     toggleAddConnectionModal,
     setActiveConnection,
+    setAvailableConnections
   };
 };
 
