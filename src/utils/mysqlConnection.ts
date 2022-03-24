@@ -26,26 +26,25 @@ export const buildMySQLConnectionConfig = (
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const buildMySQLQueryResult = (resultArray: any[], fields: MySQLFieldInfo[] | undefined): any[] => {
+const buildMySQLQueryResult = (
+  resultArray: any[],
+  fields: MySQLFieldInfo[] | undefined
+): any[] => {
+  if (fields) {
+    const tableHeader: string[] = fields.map((field) => field.name);
 
-    if (fields) {
-      const tableHeader: string[] = fields.map((field) => field.name);
+    const dataRows = resultArray.map((resultObject) => {
+      const dataRow = tableHeader.map((columnName) => resultObject[columnName]);
+      return dataRow;
+    });
 
-      const dataRows = resultArray.map((resultObject) => {
-          const dataRow = tableHeader.map(columnName => resultObject[columnName]);
-        return dataRow;
-      });
+    return [tableHeader, ...dataRows];
+  }
+  return [];
+};
 
-      return [tableHeader, ...dataRows];
-    }
-    return [];
-}
-
-export const executeMySQLQuery = async (
-  connectionPool: MySQLPool,
-  query: string
-) => {
-  const connectionPromise = new Promise<MySQLPoolConnection>((resolve, reject) => {
+const getConnection = (connectionPool: MySQLPool) => {
+  return new Promise<MySQLPoolConnection>((resolve, reject) => {
     connectionPool.getConnection((error, connection: MySQLPoolConnection) => {
       if (error) {
         reject(error);
@@ -53,8 +52,13 @@ export const executeMySQLQuery = async (
       resolve(connection);
     });
   });
+};
 
-  const connection = await connectionPromise;
+export const executeMySQLQuery = async (
+  connectionPool: MySQLPool,
+  query: string
+) => {
+  const connection = await getConnection(connectionPool);
 
   if (connection) {
     const queryPromise = new Promise<any>((resolve, reject) => {
@@ -76,10 +80,13 @@ export const executeMySQLQuery = async (
   }
 };
 
-export const createConnectionPool = (
+export const createConnectionPool = async (
   connectionConfig: MySQLConnectionConfig
-): MySQLPool => {
+): Promise<MySQLPool> => {
   const connectionPool = mysql.createPool(connectionConfig);
+
+  const connection = await getConnection(connectionPool);
+  connection.release();
 
   return connectionPool;
 };

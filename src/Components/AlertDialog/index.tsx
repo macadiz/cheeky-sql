@@ -8,7 +8,7 @@ import ConfirmationButtons from "./ConfirmationButtons";
 
 const AlertDialog = () => {
   const { state, hideAlert } = useApplicationContext();
-
+  
   const onConfirmation = () => {
     state.alertDialogData.onConfirmAction();
     hideAlert();

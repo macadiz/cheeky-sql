@@ -15,27 +15,37 @@ import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { Connection } from "../../Context/ConnectionsContext/types";
 import { useWorkspaceContext } from "../../Context/WorkspaceContext";
 import { createSQLInterface } from "../../utils/connections";
+import DatabaseIcon from "../DatabaseIcon";
+import { useApplicationContext } from "../../Context/ApplicationContext";
 
 export const sidebarWidth = 240;
 
 const SidebarContent = () => {
   const { state, toggleAddConnectionModal, setActiveConnection } =
     useConnectionsContext();
-
   const { createNewTab } = useWorkspaceContext();
+
+  const { showAlert } = useApplicationContext();
 
   const onNewConnectionClick = () => {
     toggleAddConnectionModal();
   };
 
   const onItemClick = async (connection: Connection) => {
-    const connectionInterface = await createSQLInterface("MYSQL", connection.connectionObject);
-    setActiveConnection(
-      connectionInterface,
-      connection
-    );
-    createNewTab();
+    try {
+      const connectionInterface = await createSQLInterface(
+        "MYSQL",
+        connection.connectionObject
+      );
+
+      setActiveConnection(connectionInterface, connection);
+      createNewTab();
+    } catch (error) {
+      const caughtError = error as Error;
+      showAlert("Connection Error", caughtError.message);
+    }
   };
+
 
   return (
     <div>
@@ -53,7 +63,7 @@ const SidebarContent = () => {
             onClick={() => onItemClick(connection)}
           >
             <ListItemIcon>
-              <StorageIcon />
+              <DatabaseIcon connectionType={connection.type} />
             </ListItemIcon>
             <ListItemText primary={connection.name} />
           </ListItem>
