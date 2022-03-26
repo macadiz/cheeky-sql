@@ -1,9 +1,7 @@
 import { createContext, FC, useContext, useEffect, useState } from "react";
 import { loadConnections, saveConnections } from "../../utils/storage";
-import { Connection, ConnectionsStateHook } from "./types";
+import { ConnectionsStateHook } from "./types";
 import useConnectionsState from "./useConnectionsState";
-
-const remote = window.require('@electron/remote');
 
 const ConnectionsContext = createContext<ConnectionsStateHook | null>(null);
 
@@ -23,7 +21,10 @@ const useConnectionsContext = (): ConnectionsStateHook => {
 
   useEffect(() => {
     if (connectionsContext) {
-      if (connectionsContext.state.availableConnections.length > 0 && isMounted) {
+      if (
+        connectionsContext.state.availableConnections.length > 0 &&
+        isMounted
+      ) {
         saveConnections(connectionsContext.state.availableConnections);
       } else if (!isMounted) {
         connectionsContext.setAvailableConnections(loadConnections());

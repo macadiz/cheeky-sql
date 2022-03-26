@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ConnectionConfig as MySQLConnectionConfig,
   Connection as MySQLConnection,
@@ -25,7 +26,6 @@ export const buildMySQLConnectionConfig = (
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const buildMySQLQueryResult = (
   resultArray: any[],
   fields: MySQLFieldInfo[] | undefined

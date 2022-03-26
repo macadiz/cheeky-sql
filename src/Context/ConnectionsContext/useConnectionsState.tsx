@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useReducer } from "react";
 import {
   ConnectionsState,
   ConnectionsStateHook,
@@ -24,7 +24,7 @@ const reducerFunction = (
     REMOVE_CONNECTION,
     TOGGLE_ADD_CONNECTION_DIALOG,
     SET_ACTIVE_CONNECTION,
-    SET_AVAILABLE_CONNECTIONS
+    SET_AVAILABLE_CONNECTIONS,
   } = constants.reducerActions;
   switch (action.type) {
     case ADD_CONNECTION: {
@@ -127,7 +127,7 @@ const useConnectionsState = (): ConnectionsStateHook => {
     removeConnection,
     toggleAddConnectionModal,
     setActiveConnection,
-    setAvailableConnections
+    setAvailableConnections,
   };
 };
 

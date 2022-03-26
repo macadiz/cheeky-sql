@@ -8,7 +8,6 @@ import {
   ListItemText,
   Toolbar,
 } from "@mui/material";
-import { Storage as StorageIcon } from "@mui/icons-material";
 import { SidebarProps } from "./types";
 import React, { FC } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
@@ -45,7 +44,6 @@ const SidebarContent = () => {
       showAlert("Connection Error", caughtError.message);
     }
   };
-
 
   return (
     <div>
