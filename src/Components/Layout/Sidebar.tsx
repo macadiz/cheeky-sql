@@ -1,27 +1,22 @@
-import {
-  Button,
-  Divider,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-} from "@mui/material";
+import { Button, Divider, Drawer, List, Toolbar } from "@mui/material";
 import { SidebarProps } from "./types";
 import React, { FC } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { Connection } from "../../Context/ConnectionsContext/types";
 import { useWorkspaceContext } from "../../Context/WorkspaceContext";
 import { createSQLInterface } from "../../utils/connections";
-import DatabaseIcon from "../DatabaseIcon";
 import { useApplicationContext } from "../../Context/ApplicationContext";
+import DatabaseListItem from "../DatabaseListItem";
 
 export const sidebarWidth = 240;
 
 const SidebarContent = () => {
-  const { state, toggleAddConnectionModal, setActiveConnection } =
-    useConnectionsContext();
+  const {
+    state,
+    toggleAddConnectionModal,
+    setActiveConnection,
+    removeConnection,
+  } = useConnectionsContext();
   const { createNewTab } = useWorkspaceContext();
 
   const { showAlert } = useApplicationContext();
@@ -45,6 +40,17 @@ const SidebarContent = () => {
     }
   };
 
+  const onItemDelete = async (connection: Connection) => {
+    showAlert(
+      `Are you sure you want to delete ${connection.name}?`,
+      "",
+      "confirm",
+      () => {
+        removeConnection(connection.connectionId as string);
+      }
+    );
+  };
+
   return (
     <div>
       <Toolbar>
@@ -55,16 +61,13 @@ const SidebarContent = () => {
       <Divider />
       <List>
         {state.availableConnections.map((connection) => (
-          <ListItem
-            button
+          <DatabaseListItem
             key={connection.connectionId}
-            onClick={() => onItemClick(connection)}
-          >
-            <ListItemIcon>
-              <DatabaseIcon connectionType={connection.type} />
-            </ListItemIcon>
-            <ListItemText primary={connection.name} />
-          </ListItem>
+            connection={connection}
+            onItemClick={onItemClick}
+            onDeleteClick={onItemDelete}
+            showDeleteIcon
+          />
         ))}
       </List>
     </div>

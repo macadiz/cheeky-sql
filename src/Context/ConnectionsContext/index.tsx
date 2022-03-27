@@ -22,7 +22,7 @@ const useConnectionsContext = (): ConnectionsStateHook => {
   useEffect(() => {
     if (connectionsContext) {
       if (
-        connectionsContext.state.availableConnections.length > 0 &&
+        connectionsContext.state.availableConnections.length >= 0 &&
         isMounted
       ) {
         saveConnections(connectionsContext.state.availableConnections);
