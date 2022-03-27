@@ -89,33 +89,36 @@ const Workspace: FC = () => {
   return (
     <div className={classes.workspaceContainer}>
       <div className={classes.workspaceTopBar}>
-        <Tabs
-          value={workspaceState.selectedTab?.tabId}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons={false}
-          aria-label="scrollable prevent tabs example"
-        >
-          {workspaceState.tabs.map((tab) => {
-            return (
-              <Tab
-                label={
-                  <div className={classes.tabLabel}>
-                    New Tab{" "}
-                    <IconButton
-                      onClick={(event) => onRemoveTabClick(event, tab.tabId)}
-                      className={classes.iconButton}
-                    >
-                      <TimesIcon />
-                    </IconButton>
-                  </div>
-                }
-                key={`workspace-tab-${tab.tabId}`}
-                value={tab.tabId}
-              />
-            );
-          })}
-        </Tabs>
+        {workspaceState.selectedTab && (
+          <Tabs
+            value={workspaceState.selectedTab?.tabId}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons={false}
+            aria-label="scrollable prevent tabs example"
+          >
+            {workspaceState.tabs.map((tab) => {
+              return (
+                <Tab
+                  component={"div"}
+                  label={
+                    <div className={classes.tabLabel}>
+                      New Tab{" "}
+                      <IconButton
+                        onClick={(event) => onRemoveTabClick(event, tab.tabId)}
+                        className={classes.iconButton}
+                      >
+                        <TimesIcon />
+                      </IconButton>
+                    </div>
+                  }
+                  key={`workspace-tab-${tab.tabId}`}
+                  value={tab.tabId}
+                />
+              );
+            })}
+          </Tabs>
+        )}
         <IconButton
           className={classes.newTabButton}
           onClick={createNewTab}
