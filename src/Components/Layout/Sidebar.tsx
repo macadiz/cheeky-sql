@@ -17,7 +17,10 @@ const SidebarContent = () => {
     setActiveConnection,
     removeConnection,
   } = useConnectionsContext();
-  const { createNewTab } = useWorkspaceContext();
+  const {
+    state: { selectedWorkspaceConnectionId },
+    openWorkspace,
+  } = useWorkspaceContext();
 
   const { showAlert } = useApplicationContext();
 
@@ -33,7 +36,7 @@ const SidebarContent = () => {
       );
 
       setActiveConnection(connectionInterface, connection);
-      createNewTab();
+      openWorkspace(connection.connectionId as string);
     } catch (error) {
       const caughtError = error as Error;
       showAlert("Connection Error", caughtError.message);
@@ -66,6 +69,9 @@ const SidebarContent = () => {
             connection={connection}
             onItemClick={onItemClick}
             onDeleteClick={onItemDelete}
+            isSelected={
+              selectedWorkspaceConnectionId === connection.connectionId
+            }
             showDeleteIcon
           />
         ))}

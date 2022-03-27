@@ -1,4 +1,10 @@
 export type WorkspaceState = {
+    workspaces: Workspace[];
+    selectedWorkspaceConnectionId: string;
+}
+
+export type Workspace = {
+    connectionId: string;
     tabs: WorkspaceTab[];
     selectedTab: WorkspaceTab | null;
 }
@@ -17,6 +23,8 @@ export type WorkspaceStateHook = {
     setTabQuery: (query: string) => void;
     setQueryResults: (results: unknown[][]) => void;
     setSelectedTab: (tabId: string) => void;
+    openWorkspace: (connectionId: string) => void;
+    closeWorkspace: (connectionId: string) => void;
 }
 
 export type WorkspaceReducerAction = {
@@ -24,4 +32,6 @@ export type WorkspaceReducerAction = {
     tabId?: string;
     tabData?: Partial<WorkspaceTab>;
     results?: unknown[][];
+    connectionId?: string;
+    workspaceData?: Workspace;
 }

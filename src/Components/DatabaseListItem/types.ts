@@ -5,4 +5,5 @@ export type DatabaseListItemProps = {
     onItemClick: (connection: Connection) => void;
     showDeleteIcon?: boolean;
     onDeleteClick?: (connection: Connection) => void;
+    isSelected?: boolean;
 }

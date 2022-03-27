@@ -63,6 +63,15 @@ const Workspace: FC = () => {
     removeTab,
   } = useWorkspaceContext();
 
+  const currentWorkspace = workspaceState.workspaces.find(
+    (workspaces) =>
+      workspaceState.selectedWorkspaceConnectionId === workspaces.connectionId
+  );
+
+  if (!currentWorkspace) {
+    return <></>;
+  }
+
   const onExecuteQueryClick = async () => {
     const activeConnection =
       connectionState.activeConnection as ActiveConnection;
@@ -70,7 +79,7 @@ const Workspace: FC = () => {
     const results = await executeQuery(
       activeConnection.type,
       activeConnection.connection,
-      workspaceState.selectedTab?.SQLQuery ?? ""
+      currentWorkspace.selectedTab?.SQLQuery ?? ""
     );
 
     setQueryResults(results);
@@ -89,15 +98,15 @@ const Workspace: FC = () => {
   return (
     <div className={classes.workspaceContainer}>
       <div className={classes.workspaceTopBar}>
-        {workspaceState.selectedTab && (
+        {currentWorkspace.selectedTab && (
           <Tabs
-            value={workspaceState.selectedTab?.tabId}
+            value={currentWorkspace.selectedTab?.tabId}
             onChange={handleChange}
             variant="scrollable"
             scrollButtons={false}
             aria-label="scrollable prevent tabs example"
           >
-            {workspaceState.tabs.map((tab) => {
+            {currentWorkspace.tabs.map((tab) => {
               return (
                 <Tab
                   component={"div"}
@@ -128,17 +137,21 @@ const Workspace: FC = () => {
         </IconButton>
       </div>
       <div>
-        <textarea
-          onChange={(e) => setTabQuery(e.target.value)}
-          value={workspaceState.selectedTab?.SQLQuery}
-        ></textarea>
-        <Button onClick={onExecuteQueryClick}>Execute</Button>
-        {workspaceState.selectedTab?.resultsToDisplay &&
-        workspaceState.selectedTab?.resultsToDisplay.length > 0 ? (
+        {currentWorkspace.selectedTab && (
+          <>
+            <textarea
+              onChange={(e) => setTabQuery(e.target.value)}
+              value={currentWorkspace.selectedTab.SQLQuery ?? ""}
+            ></textarea>
+            <Button onClick={onExecuteQueryClick}>Execute</Button>
+          </>
+        )}
+        {currentWorkspace.selectedTab?.resultsToDisplay &&
+        currentWorkspace.selectedTab?.resultsToDisplay.length > 0 ? (
           <Table>
             <TableHead>
               <TableRow>
-                {workspaceState.selectedTab?.resultsToDisplay[0].map(
+                {currentWorkspace.selectedTab?.resultsToDisplay[0].map(
                   (cell, columnIndex) => {
                     return (
                       <TableCell
@@ -153,7 +166,7 @@ const Workspace: FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {workspaceState.selectedTab?.resultsToDisplay
+              {currentWorkspace.selectedTab?.resultsToDisplay
                 .slice(1)
                 .map((row, rowIndex) => {
                   return (

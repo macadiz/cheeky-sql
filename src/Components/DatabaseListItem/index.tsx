@@ -22,6 +22,7 @@ const useStyles = makeStyles({
 });
 
 const DatabaseListItem: FC<DatabaseListItemProps> = ({
+  isSelected = false,
   connection,
   onItemClick,
   showDeleteIcon = false,
@@ -33,7 +34,7 @@ const DatabaseListItem: FC<DatabaseListItemProps> = ({
   return (
     <ListItem button onClick={() => onItemClick(connection)}>
       <ListItemIcon>
-        <DatabaseIcon connectionType={connection.type} />
+        <DatabaseIcon connectionType={connection.type} isEnabled={isSelected} />
       </ListItemIcon>
       <ListItemText primary={connection.name} />
       {showDeleteIcon && (

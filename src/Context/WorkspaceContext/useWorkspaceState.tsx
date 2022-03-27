@@ -9,61 +9,97 @@ import { v4 as getUUIDD } from "uuid";
 import constants from "./constants";
 
 const initialState: WorkspaceState = {
-  tabs: [],
-  selectedTab: null,
+  workspaces: [],
+  selectedWorkspaceConnectionId: "",
+};
+
+const getCurrentWorkspace = (state: WorkspaceState) => {
+  const currentWorkspaceIndex = state.workspaces.findIndex((workspace) => {
+    return workspace.connectionId === state.selectedWorkspaceConnectionId;
+  });
+  return state.workspaces[currentWorkspaceIndex];
 };
 
 const reducerFunction = (
   state: WorkspaceState,
   action: WorkspaceReducerAction
 ) => {
-  const { CREATE_NEW_TAB, REMOVE_TAB, SET_CURRENT_TAB_DATA, SET_SELECTED_TAB } =
-    constants.reducerActions;
+  const {
+    CREATE_NEW_TAB,
+    REMOVE_TAB,
+    SET_CURRENT_TAB_DATA,
+    SET_SELECTED_TAB,
+    OPEN_WORKSPACE,
+    CLOSE_WORKSPACE,
+  } = constants.reducerActions;
+
+  const newState = { ...state };
+  const currentWorkspace = getCurrentWorkspace(newState);
+
   switch (action.type) {
     case CREATE_NEW_TAB: {
-      return {
-        ...state,
-        tabs: [...state.tabs, action.tabData],
-      } as WorkspaceState;
+      currentWorkspace.tabs.push(action.tabData as WorkspaceTab);
+      return newState as WorkspaceState;
     }
     case REMOVE_TAB: {
-      const currentTabs = [...state.tabs];
+      const currentTabs = currentWorkspace.tabs;
       const tabToRemoveIndex = currentTabs.findIndex(
         (tab) => tab.tabId === action.tabId
       );
       currentTabs.splice(tabToRemoveIndex, 1);
 
-      return {
-        ...state,
-        tabs: [...currentTabs],
-      } as WorkspaceState;
+      return newState as WorkspaceState;
     }
     case SET_CURRENT_TAB_DATA: {
-      return {
-        ...state,
-        selectedTab: {
-          ...state.selectedTab,
-          ...action.tabData,
-        },
-      } as WorkspaceState;
+      currentWorkspace.selectedTab = {
+        ...(currentWorkspace.selectedTab as WorkspaceTab),
+        ...action.tabData,
+      };
+
+      return newState as WorkspaceState;
     }
     case SET_SELECTED_TAB: {
-      const currentSelectedTabIndex = state.tabs.findIndex(
-        (tab) => tab.tabId === state.selectedTab?.tabId
+      const currentSelectedTabIndex = currentWorkspace.tabs.findIndex(
+        (tab) => tab.tabId === currentWorkspace.selectedTab?.tabId
       );
-      const currentTabs = [...state.tabs];
-      currentTabs[currentSelectedTabIndex] = state.selectedTab as WorkspaceTab;
+      const currentTabs = currentWorkspace.tabs;
+      currentTabs[currentSelectedTabIndex] =
+        currentWorkspace.selectedTab as WorkspaceTab;
 
-      const selectedTab = state.tabs.find((tab) => tab.tabId === action.tabId);
+      const selectedTab =
+        currentWorkspace.tabs.find((tab) => tab.tabId === action.tabId) ?? null;
+      currentWorkspace.selectedTab = selectedTab;
 
-      return {
-        ...state,
-        tabs: currentTabs,
-        selectedTab,
-      } as WorkspaceState;
+      return newState as WorkspaceState;
+    }
+    case OPEN_WORKSPACE: {
+      if (!action.workspaceData) {
+        const foundWorkspace = newState.workspaces.find(
+          (workspace) => workspace.connectionId === action.connectionId
+        );
+        if (foundWorkspace) {
+          newState.selectedWorkspaceConnectionId =
+            action.connectionId as string;
+        }
+      } else {
+        newState.workspaces.push(action.workspaceData);
+        newState.selectedWorkspaceConnectionId =
+          action.workspaceData.connectionId;
+      }
+      return newState as WorkspaceState;
+    }
+    case CLOSE_WORKSPACE: {
+      const foundWorkspaceIndex = newState.workspaces.findIndex(
+        (workspace) => workspace.connectionId === action.connectionId
+      );
+      newState.workspaces.splice(foundWorkspaceIndex, 1);
+      if (newState.selectedWorkspaceConnectionId === action.connectionId) {
+        newState.selectedWorkspaceConnectionId = "";
+      }
+      return newState as WorkspaceState;
     }
     default: {
-      return { ...state };
+      return newState as WorkspaceState;
     }
   }
 };
@@ -86,21 +122,22 @@ const useWorkspaceState = (): WorkspaceStateHook => {
   };
 
   const removeTab = (tabId: string) => {
-    if (state.tabs.length > 1) {
-      const tabToRemoveIndex = state.tabs.findIndex(
+    const currentWorkspace = getCurrentWorkspace({ ...state });
+    if (currentWorkspace.tabs.length > 1) {
+      const tabToRemoveIndex = currentWorkspace.tabs.findIndex(
         (tab) => tab.tabId === tabId
       );
 
-      if (tabId === state.selectedTab?.tabId) {
+      if (tabId === currentWorkspace.selectedTab?.tabId) {
         let nextSelectedTab;
 
         if (
           tabToRemoveIndex === 0 &&
-          tabToRemoveIndex !== state.tabs.length - 1
+          tabToRemoveIndex !== currentWorkspace.tabs.length - 1
         ) {
-          nextSelectedTab = state.tabs[tabToRemoveIndex + 1];
+          nextSelectedTab = currentWorkspace.tabs[tabToRemoveIndex + 1];
         } else {
-          nextSelectedTab = state.tabs[tabToRemoveIndex - 1];
+          nextSelectedTab = currentWorkspace.tabs[tabToRemoveIndex - 1];
         }
 
         setSelectedTab(nextSelectedTab?.tabId);
@@ -138,6 +175,26 @@ const useWorkspaceState = (): WorkspaceStateHook => {
     });
   };
 
+  const openWorkspace = (connectionId: string) => {
+    const foundWorkspace = state.workspaces.find((workspace) => workspace.connectionId === connectionId);
+    if (foundWorkspace) {
+      dispatch({ type: constants.reducerActions.OPEN_WORKSPACE, connectionId });
+    } else {
+      dispatch({
+        type: constants.reducerActions.OPEN_WORKSPACE,
+        workspaceData: {
+          connectionId,
+          tabs: [],
+          selectedTab: null,
+        },
+      });
+    }
+  };
+
+  const closeWorkspace = (connectionId: string) => {
+    dispatch({ type: constants.reducerActions.CLOSE_WORKSPACE, connectionId });
+  };
+
   return {
     state,
     createNewTab,
@@ -145,6 +202,8 @@ const useWorkspaceState = (): WorkspaceStateHook => {
     setTabQuery,
     setQueryResults,
     setSelectedTab,
+    openWorkspace,
+    closeWorkspace,
   };
 };
 
