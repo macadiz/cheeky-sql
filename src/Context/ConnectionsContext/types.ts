@@ -24,7 +24,7 @@ export type ConnectionsStateHook = {
     addNewConnection: (connection: Connection | Connection[]) => void;
     removeConnection: (connectionId: string) => void;
     toggleAddConnectionModal: () => void;
-    setActiveConnection: (connection: ConnectionInterfacesTypes, connectionData: Connection) => void;
+    setActiveConnection: (connection?: ConnectionInterfacesTypes, connectionData?: Connection) => void;
     setAvailableConnections: (connection: Connection[]) => void;
 }
 

@@ -59,10 +59,12 @@ const reducerFunction = (
     case SET_ACTIVE_CONNECTION: {
       return {
         ...state,
-        activeConnection: {
-          ...action.connectionData,
-          connection: action.activeConnection,
-        },
+        activeConnection: action.activeConnection
+          ? {
+              ...action.connectionData,
+              connection: action.activeConnection,
+            }
+          : null,
       } as ConnectionsState;
     }
     default: {
@@ -104,8 +106,8 @@ const useConnectionsState = (): ConnectionsStateHook => {
   };
 
   const setActiveConnection = (
-    activeConnection: ConnectionInterfacesTypes,
-    connectionData: Connection
+    activeConnection?: ConnectionInterfacesTypes,
+    connectionData?: Connection
   ) => {
     dispatch({
       type: constants.reducerActions.SET_ACTIVE_CONNECTION,

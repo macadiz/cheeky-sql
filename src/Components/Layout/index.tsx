@@ -1,6 +1,5 @@
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Toolbar } from "@mui/material";
 import {
-  Menu as MenuIcon,
   CloudOff as CloudOffIcon,
 } from "@mui/icons-material";
 import React, { FC, useState } from "react";
@@ -10,6 +9,7 @@ import { makeStyles } from "@mui/styles";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import Workspace from "../Workspace";
 import AlertDialog from "../AlertDialog";
+import Topbar from "../Topbar";
 
 const useStyles = makeStyles({
   mainContent: {
@@ -40,25 +40,12 @@ const Layout: FC = () => {
             ml: { sm: `${sidebarWidth}px` },
           }}
         >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleSidebarToggle}
-              sx={{ mr: 2, display: { sm: "none" } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Cheeky SQL
-            </Typography>
-          </Toolbar>
+          <Topbar handleSidebarToggle={handleSidebarToggle} />
         </AppBar>
         <Box
           component="nav"
           sx={{ width: { sm: sidebarWidth }, flexShrink: { sm: 0 } }}
-          aria-label="mailbox folders"
+          aria-label="database connections"
         >
           <Sidebar
             isOpen={sidebarOpen}
