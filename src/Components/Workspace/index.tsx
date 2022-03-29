@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   IconButton,
@@ -17,11 +18,15 @@ import {
   Close as TimesIcon,
   PlayArrow as PlayArrowIcon,
 } from "@mui/icons-material";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
-import { ActiveConnection } from "../../Context/ConnectionsContext/types";
+import {
+  ActiveConnection,
+  SQLError,
+  SQLErrorTypes,
+} from "../../Context/ConnectionsContext/types";
 import { useWorkspaceContext } from "../../Context/WorkspaceContext";
-import { executeQuery } from "../../utils/connections";
+import { executeQuery, solveSQLError } from "../../utils/connections";
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
@@ -77,6 +82,7 @@ const useStyles = makeStyles({
 const Workspace: FC = () => {
   const classes = useStyles();
 
+  const [sqlError, setSQLError] = useState<SQLError | null>(null);
   const { state: connectionState } = useConnectionsContext();
   const {
     state: workspaceState,
@@ -97,16 +103,21 @@ const Workspace: FC = () => {
   }
 
   const onExecuteQueryClick = async () => {
+    setSQLError(null);
+    setQueryResults([]);
     const activeConnection =
       connectionState.activeConnection as ActiveConnection;
 
-    const results = await executeQuery(
-      activeConnection.type,
-      activeConnection.connection,
-      currentWorkspace.selectedTab?.SQLQuery ?? ""
-    );
-
-    setQueryResults(results);
+    try {
+      const results = await executeQuery(
+        activeConnection.type,
+        activeConnection.connection,
+        currentWorkspace.selectedTab?.SQLQuery ?? ""
+      );
+      setQueryResults(results);
+    } catch (error) {
+      setSQLError(solveSQLError(activeConnection.type, error as SQLErrorTypes));
+    }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -185,6 +196,7 @@ const Workspace: FC = () => {
             />
           </>
         )}
+        {sqlError && <Alert severity="error">{sqlError.message}</Alert>}
         {currentWorkspace.selectedTab?.resultsToDisplay &&
         currentWorkspace.selectedTab?.resultsToDisplay.length > 0 ? (
           <Table>

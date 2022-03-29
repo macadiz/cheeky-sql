@@ -1,4 +1,4 @@
-import { ConnectionOptions as MySQLConnectionOptions, Pool as MySQLPool } from "mysql";
+import { ConnectionOptions as MySQLConnectionOptions, Pool as MySQLPool, MysqlError } from "mysql";
 
 export type ConnectionsState = {
     availableConnections: Connection[];
@@ -36,5 +36,12 @@ export type ConnectionReducerAction = {
     connectionData?: Connection;
 };
 
+export type SQLErrorTypes = MysqlError | null;
+export type SQLError = {
+    errNo: number,
+    code: string,
+    message?: string,
+    details?: string
+}
 export type ConnectionInterfacesTypes = MySQLPool | null;
 export type ConnectionTypes = "MYSQL";

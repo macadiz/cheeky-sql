@@ -8,9 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import {
-  TestConnectionConfig,
-} from "../../utils/connections";
+import { testConnectionConfig } from "../../utils/connections";
 import { Connection } from "../../Context/ConnectionsContext/types";
 import { AddConnectionFormState } from "./types";
 import { useApplicationContext } from "../../Context/ApplicationContext";
@@ -76,7 +74,7 @@ const AddConnectionDialog = () => {
   };
 
   const checkIfConnectionIsValid = async () => {
-    return await TestConnectionConfig(
+    return await testConnectionConfig(
       "MYSQL",
       buildMySQLConnectionConfig(host, port, userName, password, database)
     );

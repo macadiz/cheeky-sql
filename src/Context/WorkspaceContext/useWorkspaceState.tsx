@@ -128,9 +128,8 @@ const useWorkspaceState = (): WorkspaceStateHook => {
         (tab) => tab.tabId === tabId
       );
 
+      let nextSelectedTab;
       if (tabId === currentWorkspace.selectedTab?.tabId) {
-        let nextSelectedTab;
-
         if (
           tabToRemoveIndex === 0 &&
           tabToRemoveIndex !== currentWorkspace.tabs.length - 1
@@ -139,14 +138,14 @@ const useWorkspaceState = (): WorkspaceStateHook => {
         } else {
           nextSelectedTab = currentWorkspace.tabs[tabToRemoveIndex - 1];
         }
-
-        setSelectedTab(nextSelectedTab?.tabId);
       }
 
       dispatch({
         type: constants.reducerActions.REMOVE_TAB,
-        tabId: tabId,
+        tabId,
       });
+
+      nextSelectedTab && setSelectedTab(nextSelectedTab?.tabId);
     }
   };
 
@@ -176,7 +175,9 @@ const useWorkspaceState = (): WorkspaceStateHook => {
   };
 
   const openWorkspace = (connectionId: string) => {
-    const foundWorkspace = state.workspaces.find((workspace) => workspace.connectionId === connectionId);
+    const foundWorkspace = state.workspaces.find(
+      (workspace) => workspace.connectionId === connectionId
+    );
     if (foundWorkspace) {
       dispatch({ type: constants.reducerActions.OPEN_WORKSPACE, connectionId });
     } else {
