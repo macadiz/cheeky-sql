@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   IconButton,
   Tab,
@@ -8,8 +9,14 @@ import {
   TableHead,
   TableRow,
   Tabs,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { Add as AddIcon, Close as TimesIcon } from "@mui/icons-material";
+import {
+  Add as AddIcon,
+  Close as TimesIcon,
+  PlayArrow as PlayArrowIcon,
+} from "@mui/icons-material";
 import React, { FC } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { ActiveConnection } from "../../Context/ConnectionsContext/types";
@@ -19,6 +26,7 @@ import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
   workspaceContainer: {
+    width: "100%",
     "& .MuiButtonBase-root.MuiTab-root": {
       padding: "2px 2px 0 2px",
       height: 30,
@@ -47,6 +55,22 @@ const useStyles = makeStyles({
   newTabButton: {
     width: 48,
     height: 48,
+  },
+  workspaceQueryContainer: {
+    width: "100%",
+  },
+  toolbarContainer: {
+    margin: "16px 0",
+    width: "100%",
+  },
+  nullText: {
+    fontStyle: "italic",
+  },
+  toolButton: {
+    padding: "0 !important",
+    minWidth: "28px !important",
+    width: 28,
+    height: 28,
   },
 });
 
@@ -136,14 +160,29 @@ const Workspace: FC = () => {
           <AddIcon />
         </IconButton>
       </div>
-      <div>
+      <div className={classes.workspaceQueryContainer}>
         {currentWorkspace.selectedTab && (
           <>
-            <textarea
+            <Box className={classes.toolbarContainer}>
+              <Button
+                className={classes.toolButton}
+                onClick={onExecuteQueryClick}
+                variant="contained"
+                color="primary"
+                title="Run SQL query"
+              >
+                <PlayArrowIcon />
+              </Button>
+            </Box>
+            <TextField
               onChange={(e) => setTabQuery(e.target.value)}
               value={currentWorkspace.selectedTab.SQLQuery ?? ""}
-            ></textarea>
-            <Button onClick={onExecuteQueryClick}>Execute</Button>
+              label="SQL query"
+              multiline
+              fullWidth
+              minRows={5}
+              maxRows={5}
+            />
           </>
         )}
         {currentWorkspace.selectedTab?.resultsToDisplay &&
@@ -176,7 +215,13 @@ const Workspace: FC = () => {
                           <TableCell
                             key={`results-cell-${rowIndex}-${columnIndex}`}
                           >
-                            {cell as string}
+                            {!cell ? (
+                              <Typography className={classes.nullText}>
+                                NULL
+                              </Typography>
+                            ) : (
+                              (cell as string)
+                            )}
                           </TableCell>
                         );
                       })}
