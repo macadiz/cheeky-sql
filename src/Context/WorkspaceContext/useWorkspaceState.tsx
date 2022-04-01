@@ -87,6 +87,7 @@ const reducerFunction = (
         newState.selectedWorkspaceConnectionId =
           action.workspaceData.connectionId;
       }
+
       return newState as WorkspaceState;
     }
     case CLOSE_WORKSPACE: {
@@ -109,10 +110,10 @@ const useWorkspaceState = (): WorkspaceStateHook => {
   const [state, dispatch] = useReducer(reducerFunction, initialState);
 
   const createNewTab = () => {
-    const tabToCreate = {
+    const tabToCreate: WorkspaceTab = {
       tabId: getUUIDD(),
       SQLQuery: "",
-      resultsToDisplay: [],
+      resultSet: [],
       queryHistory: [],
     };
     dispatch({
@@ -182,12 +183,18 @@ const useWorkspaceState = (): WorkspaceStateHook => {
     if (foundWorkspace) {
       dispatch({ type: constants.reducerActions.OPEN_WORKSPACE, connectionId });
     } else {
+      const newTab: WorkspaceTab = {
+        tabId: getUUIDD(),
+        SQLQuery: "",
+        resultSet: [],
+        queryHistory: [],
+      };
       dispatch({
         type: constants.reducerActions.OPEN_WORKSPACE,
         workspaceData: {
           connectionId,
-          tabs: [],
-          selectedTab: null,
+          tabs: [newTab],
+          selectedTab: newTab,
         },
       });
     }

@@ -41,17 +41,19 @@ const arrangeMySQLResults = (resultArray: any, fields: MySQLFieldInfo[]) => {
 }
 
 const buildMySQLQueryResult = (
-  resultArray: any[],
+  resultArray: any[] | undefined,
   fields: MySQLFieldInfo[] | MySQLFieldInfo[][] | undefined
 ): any[] => {
   const resultsMatrix: any[] = [];
-  if (resultArray.some((result => Array.isArray(result)))) {
-    resultArray.forEach((result, index) => {
-      const parsedFields = fields as MySQLFieldInfo[][];
-      resultsMatrix.push(arrangeMySQLResults(result, parsedFields[index]));
-    })
-  } else if (fields) {
-    resultsMatrix.push(arrangeMySQLResults(resultArray, fields as MySQLFieldInfo[]));
+  if (resultArray) {
+    if (resultArray.some((result => Array.isArray(result)))) {
+      resultArray.forEach((result, index) => {
+        const parsedFields = fields as MySQLFieldInfo[][];
+        resultsMatrix.push(arrangeMySQLResults(result, parsedFields[index]));
+      })
+    } else if (fields) {
+      resultsMatrix.push(arrangeMySQLResults(resultArray, fields as MySQLFieldInfo[]));
+    }
   }
   return resultsMatrix;
 };
