@@ -4,14 +4,8 @@ import {
   Button,
   IconButton,
   Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Tabs,
   TextField,
-  Typography,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -28,6 +22,7 @@ import {
 import { useWorkspaceContext } from "../../Context/WorkspaceContext";
 import { executeQuery, solveSQLError } from "../../utils/connections";
 import { makeStyles } from "@mui/styles";
+import ResultsDisplay from "./ResultsDisplay";
 
 const useStyles = makeStyles({
   workspaceContainer: {
@@ -120,8 +115,10 @@ const Workspace: FC = () => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleChange = (_event: any, tabId: string) => {
+  const handleChange = (
+    _event: React.SyntheticEvent<Element, Event>,
+    tabId: string
+  ) => {
     setSelectedTab(tabId);
   };
 
@@ -129,6 +126,8 @@ const Workspace: FC = () => {
     event.stopPropagation();
     removeTab(tabId);
   };
+
+  const resultsSet = currentWorkspace.selectedTab?.resultSet;
 
   return (
     <div className={classes.workspaceContainer}>
@@ -197,56 +196,7 @@ const Workspace: FC = () => {
           </>
         )}
         {sqlError && <Alert severity="error">{sqlError.message}</Alert>}
-        {currentWorkspace.selectedTab?.resultSet &&
-          currentWorkspace.selectedTab?.resultSet.map(
-            (currentResult, index) => {
-              return currentResult && currentResult.length > 0 ? (
-                <Table key={`result-table-${index}`}>
-                  <TableHead>
-                    <TableRow>
-                      {currentResult[0].map((cell, columnIndex) => {
-                        return (
-                          <TableCell
-                            component="th"
-                            key={`result-table-${index}-results-cell-0-${columnIndex}`}
-                          >
-                            {cell as string}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {currentResult.slice(1).map((row, rowIndex) => {
-                      return (
-                        <TableRow
-                          key={`result-table-${index}-results-row-${rowIndex}`}
-                        >
-                          {row.map((cell, columnIndex) => {
-                            return (
-                              <TableCell
-                                key={`results-cell-${rowIndex}-${columnIndex}`}
-                              >
-                                {!cell ? (
-                                  <Typography className={classes.nullText}>
-                                    NULL
-                                  </Typography>
-                                ) : (
-                                  (cell as string)
-                                )}
-                              </TableCell>
-                            );
-                          })}
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              ) : (
-                <React.Fragment key={`empty-result-${index}`}></React.Fragment>
-              );
-            }
-          )}
+        {resultsSet && <ResultsDisplay resultsSet={resultsSet} />}
       </div>
     </div>
   );
