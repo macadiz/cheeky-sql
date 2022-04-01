@@ -1,5 +1,6 @@
 import { useReducer } from "react";
 import {
+  ResultSet,
   WorkspaceReducerAction,
   WorkspaceState,
   WorkspaceStateHook,
@@ -158,11 +159,11 @@ const useWorkspaceState = (): WorkspaceStateHook => {
     });
   };
 
-  const setQueryResults = (queryResults: unknown[][]) => {
+  const setQueryResults = (queryResults: ResultSet[]) => {
     dispatch({
       type: constants.reducerActions.SET_CURRENT_TAB_DATA,
       tabData: {
-        resultsToDisplay: queryResults,
+        resultSet: queryResults,
       },
     });
   };

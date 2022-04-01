@@ -26,11 +26,8 @@ export const buildMySQLConnectionConfig = (
   };
 };
 
-const buildMySQLQueryResult = (
-  resultArray: any[],
-  fields: MySQLFieldInfo[] | undefined
-): any[] => {
-  if (fields) {
+const arrangeMySQLResults = (resultArray: any, fields: MySQLFieldInfo[]) => {
+  if (Array.isArray(resultArray)) {
     const tableHeader: string[] = fields.map((field) => field.name);
 
     const dataRows = resultArray.map((resultObject) => {
@@ -40,7 +37,23 @@ const buildMySQLQueryResult = (
 
     return [tableHeader, ...dataRows];
   }
-  return [];
+  return resultArray;
+}
+
+const buildMySQLQueryResult = (
+  resultArray: any[],
+  fields: MySQLFieldInfo[] | MySQLFieldInfo[][] | undefined
+): any[] => {
+  const resultsMatrix: any[] = [];
+  if (resultArray.some((result => Array.isArray(result)))) {
+    resultArray.forEach((result, index) => {
+      const parsedFields = fields as MySQLFieldInfo[][];
+      resultsMatrix.push(arrangeMySQLResults(result, parsedFields[index]));
+    })
+  } else if (fields) {
+    resultsMatrix.push(arrangeMySQLResults(resultArray, fields as MySQLFieldInfo[]));
+  }
+  return resultsMatrix;
 };
 
 const getConnection = (connectionPool: MySQLPool) => {
@@ -64,7 +77,7 @@ export const executeMySQLQuery = async (
     const queryPromise = new Promise<any>((resolve, reject) => {
       connection.query(
         {
-          sql: query,
+          sql: query
         },
         (error, results, fields) => {
           connection.release();
@@ -83,7 +96,7 @@ export const executeMySQLQuery = async (
 export const createConnectionPool = async (
   connectionConfig: MySQLConnectionConfig
 ): Promise<MySQLPool> => {
-  const connectionPool = mysql.createPool(connectionConfig);
+  const connectionPool = mysql.createPool({ ...connectionConfig, multipleStatements: true });
 
   const connection = await getConnection(connectionPool);
   connection.release();

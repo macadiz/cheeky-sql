@@ -197,54 +197,56 @@ const Workspace: FC = () => {
           </>
         )}
         {sqlError && <Alert severity="error">{sqlError.message}</Alert>}
-        {currentWorkspace.selectedTab?.resultsToDisplay &&
-        currentWorkspace.selectedTab?.resultsToDisplay.length > 0 ? (
-          <Table>
-            <TableHead>
-              <TableRow>
-                {currentWorkspace.selectedTab?.resultsToDisplay[0].map(
-                  (cell, columnIndex) => {
-                    return (
-                      <TableCell
-                        component="th"
-                        key={`results-cell-0-${columnIndex}`}
-                      >
-                        {cell as string}
-                      </TableCell>
-                    );
-                  }
-                )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {currentWorkspace.selectedTab?.resultsToDisplay
-                .slice(1)
-                .map((row, rowIndex) => {
-                  return (
-                    <TableRow key={`results-row-${rowIndex}`}>
-                      {row.map((cell, columnIndex) => {
+        {currentWorkspace.selectedTab?.resultSet &&
+          currentWorkspace.selectedTab?.resultSet.map(
+            (currentResult, index) => {
+              return currentResult && currentResult.length > 0 ? (
+                <Table key={`result-table-${index}`}>
+                  <TableHead>
+                    <TableRow>
+                      {currentResult[0].map((cell, columnIndex) => {
                         return (
                           <TableCell
-                            key={`results-cell-${rowIndex}-${columnIndex}`}
+                            component="th"
+                            key={`result-table-${index}-results-cell-0-${columnIndex}`}
                           >
-                            {!cell ? (
-                              <Typography className={classes.nullText}>
-                                NULL
-                              </Typography>
-                            ) : (
-                              (cell as string)
-                            )}
+                            {cell as string}
                           </TableCell>
                         );
                       })}
                     </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        ) : (
-          <></>
-        )}
+                  </TableHead>
+                  <TableBody>
+                    {currentResult.slice(1).map((row, rowIndex) => {
+                      return (
+                        <TableRow
+                          key={`result-table-${index}-results-row-${rowIndex}`}
+                        >
+                          {row.map((cell, columnIndex) => {
+                            return (
+                              <TableCell
+                                key={`results-cell-${rowIndex}-${columnIndex}`}
+                              >
+                                {!cell ? (
+                                  <Typography className={classes.nullText}>
+                                    NULL
+                                  </Typography>
+                                ) : (
+                                  (cell as string)
+                                )}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              ) : (
+                <React.Fragment key={`empty-result-${index}`}></React.Fragment>
+              );
+            }
+          )}
       </div>
     </div>
   );
