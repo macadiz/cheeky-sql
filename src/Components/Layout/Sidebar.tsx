@@ -1,4 +1,15 @@
-import { Button, Divider, Drawer, List, Toolbar } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  Toolbar,
+} from "@mui/material";
+import {
+  Brightness7 as LightModeIcon,
+  DarkMode as DarkModeIcon,
+} from "@mui/icons-material";
 import { SidebarProps } from "./types";
 import React, { FC } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
@@ -7,10 +18,28 @@ import { useWorkspaceContext } from "../../Context/WorkspaceContext";
 import { createSQLInterface } from "../../utils/connections";
 import { useApplicationContext } from "../../Context/ApplicationContext";
 import DatabaseListItem from "../DatabaseListItem";
+import { useThemeContext } from "../../Context/ThemeContext";
+import { makeStyles } from "@mui/styles";
 
 export const sidebarWidth = 240;
 
+const useStyles = makeStyles({
+  toolbar: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  colorModeButton: {
+    "&.MuiButtonBase-root": {
+      borderRadius: "50%",
+    },
+  },
+});
+
 const SidebarContent = () => {
+  const classes = useStyles();
+
+  const { toggleColorMode, mode } = useThemeContext();
+
   const {
     state,
     toggleAddConnectionModal,
@@ -56,10 +85,17 @@ const SidebarContent = () => {
 
   return (
     <div>
-      <Toolbar>
+      <Toolbar className={classes.toolbar}>
         <Button variant="contained" onClick={onNewConnectionClick}>
           New connection
         </Button>
+        <IconButton
+          className={classes.colorModeButton}
+          onClick={toggleColorMode}
+          color="primary"
+        >
+          {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+        </IconButton>
       </Toolbar>
       <Divider />
       <List>
