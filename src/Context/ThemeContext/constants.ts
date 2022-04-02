@@ -1,3 +1,23 @@
+const MuiTabsStyles = {
+    MuiTab: {
+        defaultProps: {
+            disableTouchRipple: true
+        },
+        styleOverrides: {
+            root: {
+                minHeight: "0"
+            }
+        }
+    },
+    MuiTabs: {
+        styleOverrides: {
+            root: {
+                minHeight: "0"
+            }
+        }
+    },
+}
+
 export const lightDefaultTheme = {
     breakpoints: {
         keys: [
@@ -18,6 +38,7 @@ export const lightDefaultTheme = {
     },
     direction: "ltr",
     components: {
+        ...MuiTabsStyles,
         MuiCssBaseline: {
             defaultProps: {
                 enableColorScheme: true
@@ -248,11 +269,6 @@ export const lightDefaultTheme = {
                 iconFilled: {
                     top: "calc(50% - .25em)"
                 }
-            }
-        },
-        MuiTab: {
-            defaultProps: {
-                disableTouchRipple: true
             }
         },
         MuiPaper: {
@@ -717,6 +733,7 @@ export const darkDefaultTheme = {
     },
     direction: "ltr",
     components: {
+        ...MuiTabsStyles,
         MuiCssBaseline: {
             defaultProps: {
                 enableColorScheme: true
@@ -947,11 +964,6 @@ export const darkDefaultTheme = {
                 iconFilled: {
                     top: "calc(50% - .25em)"
                 }
-            }
-        },
-        MuiTab: {
-            defaultProps: {
-                disableTouchRipple: true
             }
         },
         MuiPaper: {
