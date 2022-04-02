@@ -30,9 +30,10 @@ export const solveSQLError = (connectionType: ConnectionTypes, sqlError: SQLErro
     switch (connectionType) {
         case 'MYSQL': {
             const mySQLError = (sqlError as MysqlError);
+
             return {
                 code: mySQLError.code,
-                message: mySQLError.sqlMessage,
+                message: mySQLError.sqlMessage ?? mySQLError.message,
                 errNo: mySQLError.errno
             };
         }
