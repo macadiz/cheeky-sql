@@ -27,6 +27,7 @@ import ResultsDisplay from "./ResultsDisplay";
 const useStyles = makeStyles({
   workspaceContainer: {
     width: "100%",
+    height: "100%",
     "& .MuiButtonBase-root.MuiTab-root": {
       padding: "2px 2px 0 2px",
       height: 30,
@@ -58,6 +59,7 @@ const useStyles = makeStyles({
   },
   workspaceQueryContainer: {
     width: "100%",
+    height: "calc(100% - 48px)",
   },
   toolbarContainer: {
     margin: "16px 0",

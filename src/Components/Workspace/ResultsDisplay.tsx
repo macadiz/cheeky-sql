@@ -9,8 +9,10 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
+import MUIDataTable from "mui-datatables";
 import { makeStyles } from "@mui/styles";
-import React, { FC, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
+import { transformMatrixToDatatable } from "../../utils/data";
 import { ResultsDisplayProps } from "./types";
 
 const useStyles = makeStyles({
@@ -36,6 +38,11 @@ const ResultsDisplay: FC<ResultsDisplayProps> = ({ resultsSet }) => {
     Array.isArray(resultSet)
   );
 
+  const resultsToShowDataTable = useMemo(
+    () => transformMatrixToDatatable(resultsSetWithTable[selectedTab]),
+    [resultsSetWithTable]
+  );
+
   return (
     <>
       <Tabs value={selectedTab} onChange={handleChange}>
@@ -53,7 +60,17 @@ const ResultsDisplay: FC<ResultsDisplayProps> = ({ resultsSet }) => {
             key={`result-table-${index}`}
             className={classes.resultsTableContainer}
           >
-            <Table>
+            <MUIDataTable
+              {...resultsToShowDataTable}
+              title=""
+              options={{
+                filter: true,
+                filterType: "dropdown",
+                resizableColumns: true,
+                responsive: "standard",
+              }}
+            />
+            {/*<Table>
               <TableHead>
                 <TableRow>
                   {currentResult[0].map((cell, columnIndex) => {
@@ -93,7 +110,7 @@ const ResultsDisplay: FC<ResultsDisplayProps> = ({ resultsSet }) => {
                   );
                 })}
               </TableBody>
-            </Table>
+              </Table>*/}
           </Box>
         ) : (
           <React.Fragment key={`empty-result-${index}`}></React.Fragment>

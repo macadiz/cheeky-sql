@@ -991,7 +991,8 @@ export const darkDefaultTheme = {
             styleOverrides: {
                 root: {
                     padding: "8px 16px",
-                    borderColor: "rgba(194, 224, 255, 0.08)"
+                    borderColor: "rgba(194, 224, 255, 0.08)",
+                    backgroundColor: "#0a1929 !important"
                 },
                 head: {
                     color: "#fff",
@@ -1406,5 +1407,17 @@ export const darkDefaultTheme = {
         modal: 1300,
         snackbar: 1400,
         tooltip: 1500
+    }
+}
+
+export const globalStyles = {
+    body: {
+        height: "100%"
+    },
+    html: {
+        height: "100%"
+    },
+    "#root": {
+        height: "100%"
     }
 }
