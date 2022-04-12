@@ -1,7 +1,12 @@
 import { ThemeProvider } from "@emotion/react";
-import { createTheme, CssBaseline, ThemeOptions } from "@mui/material";
+import {
+  createTheme,
+  CssBaseline,
+  GlobalStyles,
+  ThemeOptions,
+} from "@mui/material";
 import { createContext, FC, useContext, useMemo, useState } from "react";
-import { lightDefaultTheme, darkDefaultTheme } from "./constants";
+import { lightDefaultTheme, darkDefaultTheme, globalStyles } from "./constants";
 import { ColorMode, ThemeContextState } from "./types";
 
 const themeContextInitialState: ThemeContextState = {
@@ -39,6 +44,7 @@ const ThemeContextProvider: FC = ({ children }) => {
   return (
     <ThemeContext.Provider value={{ mode, toggleColorMode }}>
       <ThemeProvider theme={theme}>
+        <GlobalStyles styles={globalStyles} />
         <CssBaseline />
         {children}
       </ThemeProvider>

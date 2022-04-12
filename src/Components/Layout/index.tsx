@@ -1,7 +1,5 @@
 import { AppBar, Box, Toolbar } from "@mui/material";
-import {
-  CloudOff as CloudOffIcon,
-} from "@mui/icons-material";
+import { CloudOff as CloudOffIcon } from "@mui/icons-material";
 import React, { FC, useState } from "react";
 import Sidebar, { sidebarWidth } from "./Sidebar";
 import AddConnectionDialog from "../AddConnectionDialog";
@@ -14,8 +12,7 @@ import Topbar from "../Topbar";
 const useStyles = makeStyles({
   mainContent: {
     width: "100%",
-    display: "flex",
-    alignItems: "center",
+    height: "calc(100% - 64px)",
   },
 });
 
@@ -32,7 +29,7 @@ const Layout: FC = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", height: "100%" }}>
         <AppBar
           position="fixed"
           sx={{
