@@ -1,28 +1,29 @@
-import {
-  Box,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Tabs,
-  Typography,
-} from "@mui/material";
-import MUIDataTable from "mui-datatables";
+import { Box, Tab, Tabs } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import React, { FC, useMemo, useState } from "react";
 import { transformMatrixToDatatable } from "../../utils/data";
 import { ResultsDisplayProps } from "./types";
+import {
+  Grid,
+  Table,
+  TableColumnResizing,
+  TableHeaderRow,
+  PagingPanel,
+} from "@devexpress/dx-react-grid-material-ui";
+import { IntegratedPaging, PagingState } from "@devexpress/dx-react-grid";
 
 const useStyles = makeStyles({
   nullText: {
     fontStyle: "italic",
   },
   resultsTableContainer: {
-    width: "100%",
-    maxWidth: "100%",
-    overflow: "auto",
+    height: "calc(100% - 250px)",
+    "& .Table-table, .Layout-root, .TableContainer-root": {
+      width: "100%",
+      maxWidth: "100%",
+      overflow: "auto",
+      height: "100%",
+    },
   },
 });
 
@@ -43,6 +44,15 @@ const ResultsDisplay: FC<ResultsDisplayProps> = ({ resultsSet }) => {
     [resultsSetWithTable]
   );
 
+  const columnWidths = useMemo(
+    () =>
+      resultsToShowDataTable.columns.map((column) => ({
+        columnName: column.name,
+        width: 180,
+      })),
+    [resultsToShowDataTable]
+  );
+
   return (
     <>
       <Tabs value={selectedTab} onChange={handleChange}>
@@ -60,57 +70,14 @@ const ResultsDisplay: FC<ResultsDisplayProps> = ({ resultsSet }) => {
             key={`result-table-${index}`}
             className={classes.resultsTableContainer}
           >
-            <MUIDataTable
-              {...resultsToShowDataTable}
-              title=""
-              options={{
-                filter: true,
-                filterType: "dropdown",
-                resizableColumns: true,
-                responsive: "standard",
-              }}
-            />
-            {/*<Table>
-              <TableHead>
-                <TableRow>
-                  {currentResult[0].map((cell, columnIndex) => {
-                    return (
-                      <TableCell
-                        component="th"
-                        key={`result-table-${index}-results-cell-0-${columnIndex}`}
-                      >
-                        {cell as string}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {currentResult.slice(1).map((row, rowIndex) => {
-                  return (
-                    <TableRow
-                      key={`result-table-${index}-results-row-${rowIndex}`}
-                    >
-                      {row.map((cell, columnIndex) => {
-                        return (
-                          <TableCell
-                            key={`results-cell-${rowIndex}-${columnIndex}`}
-                          >
-                            {!cell ? (
-                              <Typography className={classes.nullText}>
-                                NULL
-                              </Typography>
-                            ) : (
-                              (cell as string)
-                            )}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-              </Table>*/}
+            <Grid getRowId={(row) => row.id} {...resultsToShowDataTable}>
+              <PagingState defaultCurrentPage={0} pageSize={25} />
+              <IntegratedPaging />
+              <Table />
+              <TableColumnResizing defaultColumnWidths={columnWidths} />
+              <TableHeaderRow />
+              <PagingPanel />
+            </Grid>
           </Box>
         ) : (
           <React.Fragment key={`empty-result-${index}`}></React.Fragment>
@@ -120,4 +87,6 @@ const ResultsDisplay: FC<ResultsDisplayProps> = ({ resultsSet }) => {
   );
 };
 
-export default ResultsDisplay;
+const MemoResultsDisplay = React.memo(ResultsDisplay);
+
+export default MemoResultsDisplay;

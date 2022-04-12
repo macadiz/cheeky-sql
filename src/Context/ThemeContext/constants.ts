@@ -18,6 +18,49 @@ const MuiTabsStyles = {
     },
 }
 
+const MUIDataTables = {
+    MUIDataTableHeadCell: {
+        styleOverrides: {
+            root: {
+                height: 56,
+                fontFamily: "Oxygen",
+                fontSize: 12,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                position: "relative"
+            }
+        }
+    },
+    MUIDataTableBodyCell: {
+        styleOverrides: {
+            root: {
+                height: 48,
+                fontFamily: "Oxygen",
+                fontSize: 13,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                position: "relative",
+                maxWidth: 0
+            }
+        }
+    },
+    MUIDataTablePagination: {
+        styleOverrides: {
+            root: {
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center"
+            },
+            caption: {
+                fontSize: 12
+            }
+        }
+    }
+}
+
 export const lightDefaultTheme = {
     breakpoints: {
         keys: [
@@ -39,6 +82,7 @@ export const lightDefaultTheme = {
     direction: "ltr",
     components: {
         ...MuiTabsStyles,
+        ...MUIDataTables,
         MuiCssBaseline: {
             defaultProps: {
                 enableColorScheme: true
@@ -734,6 +778,7 @@ export const darkDefaultTheme = {
     direction: "ltr",
     components: {
         ...MuiTabsStyles,
+        ...MUIDataTables,
         MuiCssBaseline: {
             defaultProps: {
                 enableColorScheme: true

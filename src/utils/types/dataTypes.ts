@@ -4,9 +4,10 @@ export type DataTableKeyValue = {
 
 export type DataTypeColumns = {
     name: string;
+    title?: string;
 }
 
 export type DataTableObject = {
     columns: DataTypeColumns[],
-    data: DataTableKeyValue[]
+    rows: DataTableKeyValue[]
 }
