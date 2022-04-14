@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     fontStyle: "italic",
   },
   resultsTableContainer: {
-    height: "calc(100% - 250px)",
+    height: "calc(100% - 200px)",
     "& .Table-table, .Layout-root, .TableContainer-root": {
       width: "100%",
       maxWidth: "100%",
