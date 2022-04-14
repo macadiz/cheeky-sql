@@ -1,5 +1,5 @@
 import { MysqlError, Pool as MySQLPool } from "mysql";
-import { ConnectionInterfacesTypes, ConnectionConfiguration, ConnectionTypes, SQLErrorTypes, SQLError } from "../Context/ConnectionsContext/types";
+import { ConnectionInterfacesTypes, ConnectionConfiguration, ConnectionTypes, SQLErrorTypes, SQLError, ActiveConnection } from "../Context/ConnectionsContext/types";
 import { executeMySQLQuery, testMySQLConnection, createConnectionPool } from "./mysqlConnection";
 
 export const createSQLInterface = async (connectionType: ConnectionTypes, connectionConfig: ConnectionConfiguration): Promise<ConnectionInterfacesTypes> => {
@@ -36,6 +36,26 @@ export const solveSQLError = (connectionType: ConnectionTypes, sqlError: SQLErro
                 message: mySQLError.sqlMessage ?? mySQLError.message,
                 errNo: mySQLError.errno
             };
+        }
+    }
+}
+
+export const getDatabases = async (activeConnection: ActiveConnection) => {
+    switch (activeConnection.type) {
+        case "MYSQL": {
+            const connectionPool = activeConnection.connection as MySQLPool;
+            const databases = await executeQuery(activeConnection.type, connectionPool, "SHOW DATABASES;");
+            return databases;
+        }
+    }
+}
+
+export const getActiveDatabase = async (activeConnection: ActiveConnection) => {
+    switch (activeConnection.type) {
+        case "MYSQL": {
+            const connectionPool = activeConnection.connection as MySQLPool;
+            const databases = await executeQuery(activeConnection.type, connectionPool, "SELECT DATABASE();");
+            return databases;
         }
     }
 }

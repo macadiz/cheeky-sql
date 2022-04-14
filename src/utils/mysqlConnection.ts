@@ -45,7 +45,7 @@ const buildMySQLQueryResult = (
   fields: MySQLFieldInfo[] | MySQLFieldInfo[][] | undefined
 ): any[] => {
   const resultsMatrix: any[] = [];
-  if (resultArray) {
+  if (resultArray && Array.isArray(resultArray)) {
     if (resultArray.some((result => Array.isArray(result)))) {
       resultArray.forEach((result, index) => {
         const parsedFields = fields as MySQLFieldInfo[][];
