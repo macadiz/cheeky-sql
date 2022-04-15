@@ -5,6 +5,7 @@ import {
   PoolConnection as MySQLPoolConnection,
   FieldInfo as MySQLFieldInfo,
   Pool as MySQLPool,
+  OkPacket,
 } from "mysql";
 import { ConnectionConfiguration } from "../Context/ConnectionsContext/types";
 
@@ -41,18 +42,18 @@ const arrangeMySQLResults = (resultArray: any, fields: MySQLFieldInfo[]) => {
 }
 
 const buildMySQLQueryResult = (
-  resultArray: any[] | undefined,
+  resultObject: any[] | OkPacket | undefined,
   fields: MySQLFieldInfo[] | MySQLFieldInfo[][] | undefined
 ): any[] => {
   const resultsMatrix: any[] = [];
-  if (resultArray && Array.isArray(resultArray)) {
-    if (resultArray.some((result => Array.isArray(result)))) {
-      resultArray.forEach((result, index) => {
+  if (resultObject && Array.isArray(resultObject)) {
+    if (resultObject.some((result => Array.isArray(result)))) {
+      resultObject.forEach((result, index) => {
         const parsedFields = fields as MySQLFieldInfo[][];
         resultsMatrix.push(arrangeMySQLResults(result, parsedFields[index]));
       })
     } else if (fields) {
-      resultsMatrix.push(arrangeMySQLResults(resultArray, fields as MySQLFieldInfo[]));
+      resultsMatrix.push(arrangeMySQLResults(resultObject, fields as MySQLFieldInfo[]));
     }
   }
   return resultsMatrix;

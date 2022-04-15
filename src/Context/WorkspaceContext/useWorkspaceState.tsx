@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import {
   ResultSet,
   WorkspaceReducerAction,
@@ -12,6 +12,7 @@ import constants from "./constants";
 const initialState: WorkspaceState = {
   workspaces: [],
   selectedWorkspaceConnectionId: "",
+  wasScriptExecuted: false,
 };
 
 const getCurrentWorkspace = (state: WorkspaceState) => {
@@ -21,19 +22,20 @@ const getCurrentWorkspace = (state: WorkspaceState) => {
   return state.workspaces[currentWorkspaceIndex];
 };
 
+const {
+  CREATE_NEW_TAB,
+  REMOVE_TAB,
+  SET_CURRENT_TAB_DATA,
+  SET_SELECTED_TAB,
+  OPEN_WORKSPACE,
+  CLOSE_WORKSPACE,
+  SET_QUERY_EXECUTED_STATE,
+} = constants.reducerActions;
+
 const reducerFunction = (
   state: WorkspaceState,
   action: WorkspaceReducerAction
 ) => {
-  const {
-    CREATE_NEW_TAB,
-    REMOVE_TAB,
-    SET_CURRENT_TAB_DATA,
-    SET_SELECTED_TAB,
-    OPEN_WORKSPACE,
-    CLOSE_WORKSPACE,
-  } = constants.reducerActions;
-
   const newState = { ...state };
   const currentWorkspace = getCurrentWorkspace(newState);
 
@@ -100,6 +102,12 @@ const reducerFunction = (
       }
       return newState as WorkspaceState;
     }
+    case SET_QUERY_EXECUTED_STATE: {
+      return {
+        ...newState,
+        wasScriptExecuted: action.wasScriptExecuted,
+      } as WorkspaceState;
+    }
     default: {
       return newState as WorkspaceState;
     }
@@ -117,11 +125,38 @@ const useWorkspaceState = (): WorkspaceStateHook => {
       queryHistory: [],
     };
     dispatch({
-      type: constants.reducerActions.CREATE_NEW_TAB,
+      type: CREATE_NEW_TAB,
       tabData: tabToCreate,
     });
     setSelectedTab(tabToCreate.tabId);
   };
+
+  const currentWorkspace = state.workspaces.find(
+    (workspace) =>
+      workspace.connectionId === state.selectedWorkspaceConnectionId
+  );
+
+  useEffect(() => {
+    if (currentWorkspace?.selectedTab?.resultSet) {
+      const selectedTab = currentWorkspace?.selectedTab;
+      if (selectedTab.SQLQuery !== "") {
+        const newHistory = [...selectedTab.queryHistory, selectedTab.SQLQuery];
+
+        dispatch({
+          type: SET_CURRENT_TAB_DATA,
+          tabData: {
+            queryHistory: newHistory,
+          },
+        });
+      }
+    }
+  }, [currentWorkspace?.selectedTab?.resultSet]);
+
+  useEffect(() => {
+    if (currentWorkspace?.selectedTab?.queryHistory) {
+      dispatch({ type: SET_QUERY_EXECUTED_STATE, wasScriptExecuted: true });
+    }
+  }, [currentWorkspace?.selectedTab?.queryHistory]);
 
   const removeTab = (tabId: string) => {
     const currentWorkspace = getCurrentWorkspace({ ...state });
@@ -143,7 +178,7 @@ const useWorkspaceState = (): WorkspaceStateHook => {
       }
 
       dispatch({
-        type: constants.reducerActions.REMOVE_TAB,
+        type: REMOVE_TAB,
         tabId,
       });
 
@@ -153,25 +188,27 @@ const useWorkspaceState = (): WorkspaceStateHook => {
 
   const setTabQuery = (SQLQuery: string) => {
     dispatch({
-      type: constants.reducerActions.SET_CURRENT_TAB_DATA,
+      type: SET_CURRENT_TAB_DATA,
       tabData: {
         SQLQuery,
       },
     });
   };
 
-  const setQueryResults = (queryResults: ResultSet[]) => {
-    dispatch({
-      type: constants.reducerActions.SET_CURRENT_TAB_DATA,
-      tabData: {
-        resultSet: queryResults,
-      },
-    });
+  const setQueryResults = (queryResults: ResultSet[] | null) => {
+    if (currentWorkspace?.selectedTab) {
+      dispatch({
+        type: SET_CURRENT_TAB_DATA,
+        tabData: {
+          resultSet: queryResults,
+        },
+      });
+    }
   };
 
   const setSelectedTab = (tabId: string) => {
     dispatch({
-      type: constants.reducerActions.SET_SELECTED_TAB,
+      type: SET_SELECTED_TAB,
       tabId,
     });
   };
@@ -190,7 +227,7 @@ const useWorkspaceState = (): WorkspaceStateHook => {
         queryHistory: [],
       };
       dispatch({
-        type: constants.reducerActions.OPEN_WORKSPACE,
+        type: OPEN_WORKSPACE,
         workspaceData: {
           connectionId,
           tabs: [newTab],
@@ -200,8 +237,12 @@ const useWorkspaceState = (): WorkspaceStateHook => {
     }
   };
 
+  const resetExecutedState = () => {
+    dispatch({ type: SET_QUERY_EXECUTED_STATE, wasScriptExecuted: false });
+  };
+
   const closeWorkspace = (connectionId: string) => {
-    dispatch({ type: constants.reducerActions.CLOSE_WORKSPACE, connectionId });
+    dispatch({ type: CLOSE_WORKSPACE, connectionId });
   };
 
   return {
@@ -213,6 +254,7 @@ const useWorkspaceState = (): WorkspaceStateHook => {
     setSelectedTab,
     openWorkspace,
     closeWorkspace,
+    resetExecutedState,
   };
 };
 

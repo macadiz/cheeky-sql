@@ -6,16 +6,20 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import DatabaseIcon from "../DatabaseIcon";
 import { DatabaseListItemProps } from "./types";
 import { makeStyles } from "@mui/styles";
 import DatabaseObjectTree from "../DatabaseObjectTree";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { DatabaseObject } from "../DatabaseObjectTree/types";
-import { getDatabaseList, getSelectedDatabase } from "../../utils/navigation";
+import {
+  getDatabaseList,
+  getSelectedDatabase,
+  setSelectedDatabase,
+} from "../../utils/navigation";
+import { useWorkspaceContext } from "../../Context/WorkspaceContext";
 import { ActiveConnection } from "../../Context/ConnectionsContext/types";
-import useWorkspaceState from "../../Context/WorkspaceContext/useWorkspaceState";
 
 const useStyles = makeStyles({
   deleteIcon: {
@@ -40,49 +44,61 @@ const DatabaseListItem: FC<DatabaseListItemProps> = ({
   const classes = useStyles();
 
   const { state: connectionState } = useConnectionsContext();
-  const { state: worskpaceState } = useWorkspaceState();
+  const { state: worskpaceState, resetExecutedState } = useWorkspaceContext();
 
   const [databasesItems, setDatabasesItems] = useState<DatabaseObject[]>([]);
-  const [activeDatabase, setActiveDatabase] = useState<string | null>(null);
+  const [activeDatabase, setActiveDatabase] = useState<
+    string | null | undefined
+  >();
 
-  const getActiveDatabaseFunction = async (
-    activeConnection: ActiveConnection
-  ) => {
-    const selectedDatabase = await getSelectedDatabase(activeConnection);
-    setActiveDatabase(selectedDatabase);
-  };
-
-  useEffect(() => {
-    if (connectionState.activeConnection && isSelected) {
-      const activeConnection =
-        connectionState.activeConnection as ActiveConnection;
-      getActiveDatabaseFunction(activeConnection);
-    }
-  }, [connectionState.activeConnection, isSelected]);
-
-  useEffect(() => {
-    const activeConnection =
-      connectionState.activeConnection as ActiveConnection;
-    const getDatabasesFunction = async () => {
-      const databases = await getDatabaseList(activeConnection);
+  const getDatabasesFunction = async () => {
+    if (connectionState.activeConnection) {
+      const databases = await getDatabaseList(connectionState.activeConnection);
       setDatabasesItems(
         databases.map((database) => ({
           ...database,
           isSelected: database.name === activeDatabase,
+          onClick: async () => {
+            await setSelectedDatabase(
+              connectionState.activeConnection as ActiveConnection,
+              database.name
+            );
+            setActiveDatabase(database.name);
+          },
         }))
       );
-    };
-    getDatabasesFunction();
+    }
+  };
+
+  const getActiveDatabaseFunction = async () => {
+    if (connectionState.activeConnection) {
+      const selectedDatabase = await getSelectedDatabase(
+        connectionState.activeConnection
+      );
+      setActiveDatabase(selectedDatabase);
+    }
+  };
+
+  useEffect(() => {
+    if (isSelected) {
+      getActiveDatabaseFunction();
+    }
+  }, [isSelected]);
+
+  useEffect(() => {
+    if (activeDatabase !== undefined && isSelected) {
+      getDatabasesFunction();
+    }
   }, [activeDatabase]);
 
   useEffect(() => {
-    if (connectionState.activeConnection) {
-      console.log("a");
-      getActiveDatabaseFunction(
-        connectionState.activeConnection as ActiveConnection
-      );
+    if (worskpaceState.wasScriptExecuted && isSelected) {
+      resetExecutedState();
+      setTimeout(() => {
+        getActiveDatabaseFunction();
+      }, 100);
     }
-  }, [worskpaceState.workspaces]);
+  }, [worskpaceState.wasScriptExecuted]);
 
   return (
     <>

@@ -29,11 +29,6 @@ const useStyles = makeStyles({
     "& span": {
       fontSize: 12,
     },
-    "&.selected": {
-      "& span": {
-        fontWeight: "bold",
-      },
-    },
   },
 });
 
@@ -41,15 +36,13 @@ const ObjectTreeItem: FC<ObjectTreeItemProps> = ({
   name,
   iconName,
   isSelected = false,
+  onClick,
 }) => {
   const classes = useStyles();
   return (
-    <ListItemButton sx={{ pl: 4 }}>
+    <ListItemButton sx={{ pl: 4 }} selected={isSelected} onClick={onClick}>
       <ListItemIcon>{solveIcon(iconName)}</ListItemIcon>
-      <ListItemText
-        className={`${classes.listItemText} ${isSelected ? "selected" : ""}`}
-        primary={name}
-      />
+      <ListItemText className={`${classes.listItemText}`} primary={name} />
     </ListItemButton>
   );
 };

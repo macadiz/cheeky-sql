@@ -59,3 +59,13 @@ export const getActiveDatabase = async (activeConnection: ActiveConnection) => {
         }
     }
 }
+
+export const setActiveDatabase = async (activeConnection: ActiveConnection, databaseName: string) => {
+    switch (activeConnection.type) {
+        case "MYSQL": {
+            const connectionPool = activeConnection.connection as MySQLPool;
+            const databases = await executeQuery(activeConnection.type, connectionPool, `USE ${databaseName};`);
+            return databases;
+        }
+    }
+}

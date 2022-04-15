@@ -1,6 +1,7 @@
 export type WorkspaceState = {
     workspaces: Workspace[];
     selectedWorkspaceConnectionId: string;
+    wasScriptExecuted: boolean;
 }
 
 export type Workspace = {
@@ -12,7 +13,7 @@ export type Workspace = {
 export type WorkspaceTab = {
     tabId: string;
     SQLQuery: string;
-    resultSet: ResultSet[];
+    resultSet: ResultSet[] | null;
     queryHistory: string[];
 }
 
@@ -23,10 +24,11 @@ export type WorkspaceStateHook = {
     createNewTab: () => void;
     removeTab: (tabId: string) => void;
     setTabQuery: (query: string) => void;
-    setQueryResults: (results: ResultSet[]) => void;
+    setQueryResults: (results: ResultSet[] | null) => void;
     setSelectedTab: (tabId: string) => void;
     openWorkspace: (connectionId: string) => void;
     closeWorkspace: (connectionId: string) => void;
+    resetExecutedState: () => void;
 }
 
 export type WorkspaceReducerAction = {
@@ -36,4 +38,5 @@ export type WorkspaceReducerAction = {
     results?: unknown[][];
     connectionId?: string;
     workspaceData?: Workspace;
+    wasScriptExecuted?: boolean;
 }

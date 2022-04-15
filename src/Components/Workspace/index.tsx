@@ -101,7 +101,7 @@ const Workspace: FC = () => {
 
   const onExecuteQueryClick = async () => {
     setSQLError(null);
-    setQueryResults([]);
+    setQueryResults(null);
     const activeConnection =
       connectionState.activeConnection as ActiveConnection;
 

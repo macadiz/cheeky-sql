@@ -12,6 +12,8 @@ const DatabaseObjectTree: FC<DatabaseObjectTreeProps> = ({ objects }) => {
             key={index}
             name={object.name}
             iconName={object.icon}
+            isSelected={object.isSelected}
+            onClick={object.onClick}
           />
         );
       })}

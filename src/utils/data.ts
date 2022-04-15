@@ -21,8 +21,9 @@ export const transformMatrixToDatatable = (resultSet: any[]) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const data: DataTableKeyValue[] = dataArray.map((currentData: any[], index) => {
             const newData: DataTableKeyValue = currentData.reduce((previous: DataTableKeyValue, current, index) => {
+                const isNotNullOrUndefined = !!current;
                 const isString = typeof current === 'string' || current instanceof String;
-                previous[columns[index].name] = !isString ? current.toString() : current;
+                previous[columns[index].name] = !isNotNullOrUndefined ? "NULL" : !isString ? current.toString() : current;
                 return previous;
             }, {});
 
