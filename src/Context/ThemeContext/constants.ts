@@ -18,6 +18,19 @@ const MuiTabsStyles = {
     },
 }
 
+const TableStyles = {
+    MuiTable: {
+        styleOverrides: {
+            root: {
+                "&.Table-table thead": {
+                    position: "sticky",
+                    top: 0
+                }
+            }
+        }
+    }
+}
+
 export const lightDefaultTheme = {
     breakpoints: {
         keys: [
@@ -39,6 +52,7 @@ export const lightDefaultTheme = {
     direction: "ltr",
     components: {
         ...MuiTabsStyles,
+        ...TableStyles,
         MuiCssBaseline: {
             defaultProps: {
                 enableColorScheme: true
@@ -740,6 +754,7 @@ export const darkDefaultTheme = {
     direction: "ltr",
     components: {
         ...MuiTabsStyles,
+        ...TableStyles,
         MuiCssBaseline: {
             defaultProps: {
                 enableColorScheme: true

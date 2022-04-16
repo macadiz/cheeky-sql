@@ -6,7 +6,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import DatabaseIcon from "../DatabaseIcon";
 import { DatabaseListItemProps } from "./types";
 import { makeStyles } from "@mui/styles";

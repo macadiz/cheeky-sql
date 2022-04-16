@@ -11,7 +11,7 @@ import {
   DarkMode as DarkModeIcon,
 } from "@mui/icons-material";
 import { SidebarProps } from "./types";
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { Connection } from "../../Context/ConnectionsContext/types";
 import { useWorkspaceContext } from "../../Context/WorkspaceContext";
