@@ -50,6 +50,16 @@ export const getDatabases = async (activeConnection: ActiveConnection) => {
     }
 }
 
+export const getDatabaseTables = async (activeConnection: ActiveConnection, database: string) => {
+    switch (activeConnection.type) {
+        case "MYSQL": {
+            const connectionPool = activeConnection.connection as MySQLPool;
+            const tables = await executeQuery(activeConnection.type, connectionPool, "SHOW TABLES;", database);
+            return tables;
+        }
+    }
+}
+
 export const getActiveDatabase = async (activeConnection: ActiveConnection) => {
     switch (activeConnection.type) {
         case "MYSQL": {

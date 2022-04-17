@@ -3,9 +3,9 @@ import React, { FC } from "react";
 import ObjectTreeItem from "./ObjectTreeItem";
 import { DatabaseObjectTreeProps } from "./types";
 
-const DatabaseObjectTree: FC<DatabaseObjectTreeProps> = ({ objects }) => {
+const DatabaseObjectTree: FC<DatabaseObjectTreeProps> = ({ objects, sx }) => {
   return (
-    <List>
+    <List sx={sx}>
       {objects.map((object, index) => {
         return (
           <ObjectTreeItem
@@ -14,6 +14,7 @@ const DatabaseObjectTree: FC<DatabaseObjectTreeProps> = ({ objects }) => {
             iconName={object.icon}
             isSelected={object.isSelected}
             onClick={object.onClick}
+            objects={object.objects}
           />
         );
       })}

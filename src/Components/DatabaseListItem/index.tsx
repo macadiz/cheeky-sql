@@ -13,8 +13,11 @@ import { makeStyles } from "@mui/styles";
 import DatabaseObjectTree from "../DatabaseObjectTree";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { DatabaseObject } from "../DatabaseObjectTree/types";
-import { getDatabaseList, getSelectedDatabase } from "../../utils/navigation";
-import { useWorkspaceContext } from "../../Context/WorkspaceContext";
+import {
+  getDatabaseList,
+  getDatabaseObjectsNavigation,
+  getSelectedDatabase,
+} from "../../utils/navigation";
 import { ActiveConnection } from "../../Context/ConnectionsContext/types";
 
 const useStyles = makeStyles({
@@ -56,6 +59,10 @@ const DatabaseListItem: FC<DatabaseListItemProps> = ({
           onClick: async () => {
             setDefaultDatabase(database.name);
           },
+          objects: getDatabaseObjectsNavigation(
+            connectionState.activeConnection as ActiveConnection,
+            database.name
+          ),
         }))
       );
     }
@@ -105,7 +112,7 @@ const DatabaseListItem: FC<DatabaseListItemProps> = ({
         )}
       </ListItem>
       <Collapse in={isSelected} timeout="auto" unmountOnExit>
-        <DatabaseObjectTree objects={databasesItems} />
+        <DatabaseObjectTree objects={databasesItems} sx={{ pl: "10px" }} />
       </Collapse>
     </>
   );
