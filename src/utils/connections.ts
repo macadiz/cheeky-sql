@@ -1,6 +1,6 @@
 import { MysqlError, Pool as MySQLPool } from "mysql";
 import { ConnectionInterfacesTypes, ConnectionConfiguration, ConnectionTypes, SQLErrorTypes, SQLError, ActiveConnection } from "../Context/ConnectionsContext/types";
-import { executeMySQLQuery, testMySQLConnection, createConnectionPool } from "./mysqlConnection";
+import { executeMySQLQuery, testMySQLConnection, createConnectionPool, getConnectionFromPool } from "./mysqlConnection";
 
 export const createSQLInterface = async (connectionType: ConnectionTypes, connectionConfig: ConnectionConfiguration): Promise<ConnectionInterfacesTypes> => {
     switch (connectionType) {
@@ -10,10 +10,10 @@ export const createSQLInterface = async (connectionType: ConnectionTypes, connec
     }
 }
 
-export const executeQuery = async (connectionType: ConnectionTypes, connection: ConnectionInterfacesTypes, query: string) => {
+export const executeQuery = async (connectionType: ConnectionTypes, connection: ConnectionInterfacesTypes, query: string, database?: string | null) => {
     switch (connectionType) {
         case 'MYSQL': {
-            return await executeMySQLQuery(connection as MySQLPool, query);
+            return await executeMySQLQuery(connection as MySQLPool, query, database);
         }
     }
 }
@@ -55,16 +55,6 @@ export const getActiveDatabase = async (activeConnection: ActiveConnection) => {
         case "MYSQL": {
             const connectionPool = activeConnection.connection as MySQLPool;
             const databases = await executeQuery(activeConnection.type, connectionPool, "SELECT DATABASE();");
-            return databases;
-        }
-    }
-}
-
-export const setActiveDatabase = async (activeConnection: ActiveConnection, databaseName: string) => {
-    switch (activeConnection.type) {
-        case "MYSQL": {
-            const connectionPool = activeConnection.connection as MySQLPool;
-            const databases = await executeQuery(activeConnection.type, connectionPool, `USE ${databaseName};`);
             return databases;
         }
     }

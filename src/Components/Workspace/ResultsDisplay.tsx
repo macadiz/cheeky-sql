@@ -1,8 +1,8 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { transformMatrixToDatatable } from "../../utils/data";
-import { ResultsDisplayProps } from "./types";
+import { ColumnWidth, ResultsDisplayProps } from "./types";
 import {
   Grid,
   Table,
@@ -11,6 +11,7 @@ import {
   PagingPanel,
 } from "@devexpress/dx-react-grid-material-ui";
 import { IntegratedPaging, PagingState } from "@devexpress/dx-react-grid";
+import { ContactSupportOutlined } from "@mui/icons-material";
 
 const useStyles = makeStyles({
   nullText: {
@@ -31,12 +32,20 @@ const ResultsDisplay: FC<ResultsDisplayProps> = ({ resultsSet }) => {
   const classes = useStyles();
   const [selectedTab, setSelectedTab] = useState(0);
 
+  const [columnWidths, setColumnWidths] = useState<ColumnWidth[]>([]);
+
+  const [hasResultsChanged, setHasResultsChanged] = useState(false);
+  const [hasColumnsWidthsChanged, setHasColumnsWidthChanged] = useState(false);
+  const [areResultsAndColumnsSynced, setAreResultsAndColumnsSynced] =
+    useState(false);
+
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
   };
 
-  const resultsSetWithTable = resultsSet.filter((resultSet) =>
-    Array.isArray(resultSet)
+  const resultsSetWithTable = useMemo(
+    () => resultsSet.filter((resultSet) => Array.isArray(resultSet)),
+    [resultsSet]
   );
 
   const resultsToShowDataTable = useMemo(
@@ -44,14 +53,32 @@ const ResultsDisplay: FC<ResultsDisplayProps> = ({ resultsSet }) => {
     [resultsSetWithTable]
   );
 
-  const columnWidths = useMemo(
-    () =>
-      resultsToShowDataTable.columns.map((column) => ({
-        columnName: column.name,
-        width: 180,
-      })),
-    [resultsToShowDataTable]
-  );
+  useEffect(() => {
+    setAreResultsAndColumnsSynced(hasResultsChanged && hasColumnsWidthsChanged);
+  }, [hasResultsChanged, hasColumnsWidthsChanged]);
+
+  useEffect(() => {
+    setHasResultsChanged(false);
+    if (resultsSetWithTable && resultsSetWithTable.length > 0) {
+      setHasResultsChanged(true);
+    }
+  }, [resultsSet]);
+
+  useEffect(() => {
+    setColumnWidths([]);
+    if (resultsToShowDataTable && resultsToShowDataTable.columns.length > 0) {
+      setColumnWidths(
+        resultsToShowDataTable.columns.map((column) => ({
+          columnName: column.name,
+          width: 180,
+        }))
+      );
+    }
+  }, [resultsToShowDataTable]);
+
+  useEffect(() => {
+    setHasColumnsWidthChanged(columnWidths && columnWidths.length > 0);
+  }, [columnWidths]);
 
   return (
     <>
@@ -70,14 +97,16 @@ const ResultsDisplay: FC<ResultsDisplayProps> = ({ resultsSet }) => {
             key={`result-table-${index}`}
             className={classes.resultsTableContainer}
           >
-            <Grid getRowId={(row) => row.id} {...resultsToShowDataTable}>
-              <PagingState defaultCurrentPage={0} pageSize={25} />
-              <IntegratedPaging />
-              <Table />
-              <TableColumnResizing defaultColumnWidths={columnWidths} />
-              <TableHeaderRow />
-              <PagingPanel />
-            </Grid>
+            {areResultsAndColumnsSynced && (
+              <Grid getRowId={(row) => row.id} {...resultsToShowDataTable}>
+                <PagingState defaultCurrentPage={0} pageSize={25} />
+                <IntegratedPaging />
+                <Table />
+                <TableColumnResizing defaultColumnWidths={columnWidths} />
+                <TableHeaderRow />
+                <PagingPanel />
+              </Grid>
+            )}
           </Box>
         ) : (
           <React.Fragment key={`empty-result-${index}`}></React.Fragment>

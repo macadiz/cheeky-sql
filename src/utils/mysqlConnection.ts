@@ -59,7 +59,7 @@ const buildMySQLQueryResult = (
   return resultsMatrix;
 };
 
-const getConnection = (connectionPool: MySQLPool) => {
+export const getConnectionFromPool = (connectionPool: MySQLPool) => {
   return new Promise<MySQLPoolConnection>((resolve, reject) => {
     connectionPool.getConnection((error, connection: MySQLPoolConnection) => {
       if (error) {
@@ -72,9 +72,20 @@ const getConnection = (connectionPool: MySQLPool) => {
 
 export const executeMySQLQuery = async (
   connectionPool: MySQLPool,
-  query: string
+  query: string,
+  database?: string | null
 ) => {
-  const connection = await getConnection(connectionPool);
+  const connection = await getConnectionFromPool(connectionPool);
+
+  if (database) {
+    await new Promise<void>((resolve) => {
+      connection.changeUser({
+        database
+      }, () => {
+        resolve();
+      })
+    })
+  }
 
   if (connection) {
     const queryPromise = new Promise<any>((resolve, reject) => {
@@ -101,7 +112,7 @@ export const createConnectionPool = async (
 ): Promise<MySQLPool> => {
   const connectionPool = mysql.createPool({ ...connectionConfig, multipleStatements: true });
 
-  const connection = await getConnection(connectionPool);
+  const connection = await getConnectionFromPool(connectionPool);
   connection.release();
 
   return connectionPool;

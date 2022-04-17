@@ -15,17 +15,19 @@ const initialState: ConnectionsState = {
   activeConnection: null,
 };
 
+const {
+  ADD_CONNECTION,
+  REMOVE_CONNECTION,
+  TOGGLE_ADD_CONNECTION_DIALOG,
+  SET_ACTIVE_CONNECTION,
+  SET_AVAILABLE_CONNECTIONS,
+  SET_ACTIVE_DATABASE,
+} = constants.reducerActions;
+
 const reducerFunction = (
   state: ConnectionsState,
   action: ConnectionReducerAction
 ) => {
-  const {
-    ADD_CONNECTION,
-    REMOVE_CONNECTION,
-    TOGGLE_ADD_CONNECTION_DIALOG,
-    SET_ACTIVE_CONNECTION,
-    SET_AVAILABLE_CONNECTIONS,
-  } = constants.reducerActions;
   switch (action.type) {
     case ADD_CONNECTION: {
       return {
@@ -67,6 +69,12 @@ const reducerFunction = (
           : null,
       } as ConnectionsState;
     }
+    case SET_ACTIVE_DATABASE: {
+      return {
+        ...state,
+        defaultDatabase: action.database,
+      } as ConnectionsState;
+    }
     default: {
       return { ...state };
     }
@@ -89,20 +97,20 @@ const useConnectionsState = (): ConnectionsStateHook => {
     }
 
     dispatch({
-      type: constants.reducerActions.ADD_CONNECTION,
+      type: ADD_CONNECTION,
       connection: connectionsToAdd,
     });
   };
 
   const removeConnection = (connectionId: string) => {
     dispatch({
-      type: constants.reducerActions.REMOVE_CONNECTION,
+      type: REMOVE_CONNECTION,
       connectionId,
     });
   };
 
   const toggleAddConnectionModal = () => {
-    dispatch({ type: constants.reducerActions.TOGGLE_ADD_CONNECTION_DIALOG });
+    dispatch({ type: TOGGLE_ADD_CONNECTION_DIALOG });
   };
 
   const setActiveConnection = (
@@ -110,7 +118,7 @@ const useConnectionsState = (): ConnectionsStateHook => {
     connectionData?: Connection
   ) => {
     dispatch({
-      type: constants.reducerActions.SET_ACTIVE_CONNECTION,
+      type: SET_ACTIVE_CONNECTION,
       activeConnection,
       connectionData,
     });
@@ -118,8 +126,15 @@ const useConnectionsState = (): ConnectionsStateHook => {
 
   const setAvailableConnections = (connection: Connection[]) => {
     dispatch({
-      type: constants.reducerActions.SET_AVAILABLE_CONNECTIONS,
+      type: SET_AVAILABLE_CONNECTIONS,
       connection,
+    });
+  };
+
+  const setDefaultDatabase = (database: string) => {
+    dispatch({
+      type: SET_ACTIVE_DATABASE,
+      database,
     });
   };
 
@@ -130,6 +145,7 @@ const useConnectionsState = (): ConnectionsStateHook => {
     toggleAddConnectionModal,
     setActiveConnection,
     setAvailableConnections,
+    setDefaultDatabase,
   };
 };
 

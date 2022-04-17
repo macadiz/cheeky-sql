@@ -13,11 +13,7 @@ import { makeStyles } from "@mui/styles";
 import DatabaseObjectTree from "../DatabaseObjectTree";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { DatabaseObject } from "../DatabaseObjectTree/types";
-import {
-  getDatabaseList,
-  getSelectedDatabase,
-  setSelectedDatabase,
-} from "../../utils/navigation";
+import { getDatabaseList, getSelectedDatabase } from "../../utils/navigation";
 import { useWorkspaceContext } from "../../Context/WorkspaceContext";
 import { ActiveConnection } from "../../Context/ConnectionsContext/types";
 
@@ -43,13 +39,12 @@ const DatabaseListItem: FC<DatabaseListItemProps> = ({
 }) => {
   const classes = useStyles();
 
-  const { state: connectionState } = useConnectionsContext();
-  const { state: worskpaceState, resetExecutedState } = useWorkspaceContext();
+  const { state: connectionState, setDefaultDatabase } =
+    useConnectionsContext();
+
+  const { defaultDatabase } = connectionState;
 
   const [databasesItems, setDatabasesItems] = useState<DatabaseObject[]>([]);
-  const [activeDatabase, setActiveDatabase] = useState<
-    string | null | undefined
-  >();
 
   const getDatabasesFunction = async () => {
     if (connectionState.activeConnection) {
@@ -57,13 +52,9 @@ const DatabaseListItem: FC<DatabaseListItemProps> = ({
       setDatabasesItems(
         databases.map((database) => ({
           ...database,
-          isSelected: database.name === activeDatabase,
+          isSelected: database.name === defaultDatabase,
           onClick: async () => {
-            await setSelectedDatabase(
-              connectionState.activeConnection as ActiveConnection,
-              database.name
-            );
-            setActiveDatabase(database.name);
+            setDefaultDatabase(database.name);
           },
         }))
       );
@@ -75,7 +66,7 @@ const DatabaseListItem: FC<DatabaseListItemProps> = ({
       const selectedDatabase = await getSelectedDatabase(
         connectionState.activeConnection
       );
-      setActiveDatabase(selectedDatabase);
+      setDefaultDatabase(selectedDatabase);
     }
   };
 
@@ -86,19 +77,10 @@ const DatabaseListItem: FC<DatabaseListItemProps> = ({
   }, [isSelected]);
 
   useEffect(() => {
-    if (activeDatabase !== undefined && isSelected) {
+    if (defaultDatabase !== undefined && isSelected) {
       getDatabasesFunction();
     }
-  }, [activeDatabase]);
-
-  useEffect(() => {
-    if (worskpaceState.wasScriptExecuted && isSelected) {
-      resetExecutedState();
-      setTimeout(() => {
-        getActiveDatabaseFunction();
-      }, 100);
-    }
-  }, [worskpaceState.wasScriptExecuted]);
+  }, [defaultDatabase]);
 
   return (
     <>

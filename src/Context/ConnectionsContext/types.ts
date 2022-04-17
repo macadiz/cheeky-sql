@@ -3,7 +3,8 @@ import { ConnectionOptions as MySQLConnectionOptions, Pool as MySQLPool, MysqlEr
 export type ConnectionsState = {
     availableConnections: Connection[];
     showAddConnectionModal: boolean;
-    activeConnection: ActiveConnection | null
+    activeConnection: ActiveConnection | null;
+    defaultDatabase?: string | null;
 }
 
 export type Connection = {
@@ -26,6 +27,7 @@ export type ConnectionsStateHook = {
     toggleAddConnectionModal: () => void;
     setActiveConnection: (connection?: ConnectionInterfacesTypes, connectionData?: Connection) => void;
     setAvailableConnections: (connection: Connection[]) => void;
+    setDefaultDatabase: (database: string) => void;
 }
 
 export type ConnectionReducerAction = {
@@ -34,6 +36,7 @@ export type ConnectionReducerAction = {
     connectionId?: string;
     activeConnection?: ConnectionInterfacesTypes;
     connectionData?: Connection;
+    database?: string;
 };
 
 export type SQLErrorTypes = MysqlError | null;

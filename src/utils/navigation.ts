@@ -1,6 +1,6 @@
 import { DatabaseObject } from "../Components/DatabaseObjectTree/types";
 import { ActiveConnection } from "../Context/ConnectionsContext/types";
-import { getActiveDatabase, getDatabases, setActiveDatabase } from "./connections";
+import { getActiveDatabase, getDatabases } from "./connections";
 
 export const getDatabaseList = async (activeConnection: ActiveConnection): Promise<DatabaseObject[]> => {
     const databases = await getDatabases(activeConnection)
@@ -15,9 +15,4 @@ export const getDatabaseList = async (activeConnection: ActiveConnection): Promi
 export const getSelectedDatabase = async (activeConnection: ActiveConnection): Promise<string> => {
     const selectedDatabaseRaw = await getActiveDatabase(activeConnection);
     return selectedDatabaseRaw[0][1][0];
-}
-
-export const setSelectedDatabase = async (activeConnection: ActiveConnection, databaseToSelect: string): Promise<string> => {
-    await setActiveDatabase(activeConnection, databaseToSelect);
-    return databaseToSelect;
 }

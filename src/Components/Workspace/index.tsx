@@ -109,7 +109,8 @@ const Workspace: FC = () => {
       const results = await executeQuery(
         activeConnection.type,
         activeConnection.connection,
-        currentWorkspace.selectedTab?.SQLQuery ?? ""
+        currentWorkspace.selectedTab?.SQLQuery ?? "",
+        connectionState.defaultDatabase
       );
       setQueryResults(results);
     } catch (error) {
