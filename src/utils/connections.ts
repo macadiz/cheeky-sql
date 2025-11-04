@@ -1,4 +1,4 @@
-import { MysqlError, Pool as MySQLPool } from "mysql";
+import { QueryError, Pool as MySQLPool } from "mysql2";
 import { ConnectionInterfacesTypes, ConnectionConfiguration, ConnectionTypes, SQLErrorTypes, SQLError, ActiveConnection } from "../Context/ConnectionsContext/types";
 import { executeMySQLQuery, testMySQLConnection, createConnectionPool } from "./mysqlConnection";
 
@@ -29,7 +29,7 @@ export const testConnectionConfig = async (connectionType: ConnectionTypes, conn
 export const solveSQLError = (connectionType: ConnectionTypes, sqlError: SQLErrorTypes): SQLError => {
     switch (connectionType) {
         case 'MYSQL': {
-            const mySQLError = (sqlError as MysqlError);
+            const mySQLError = (sqlError as QueryError);
 
             return {
                 code: mySQLError.code,

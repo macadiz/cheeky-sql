@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  ConnectionConfig as MySQLConnectionConfig,
+  PoolOptions as MySQLConnectionConfig,
   Connection as MySQLConnection,
   PoolConnection as MySQLPoolConnection,
-  FieldInfo as MySQLFieldInfo,
+  FieldPacket as MySQLFieldInfo,
   Pool as MySQLPool,
   OkPacket,
-  MysqlError,
-} from "mysql";
+  QueryError,
+} from "mysql2";
 import { ConnectionConfiguration } from "../Context/ConnectionsContext/types";
 
-const mysql = window.require("mysql");
+const mysql = window.require("mysql2");
 
 export const buildMySQLConnectionConfig = (
   host: string,
@@ -60,7 +60,7 @@ const buildMySQLQueryResult = (
 
 export const getConnectionFromPool = (connectionPool: MySQLPool) => {
   return new Promise<MySQLPoolConnection>((resolve, reject) => {
-    connectionPool.getConnection((error: MysqlError | null, connection: MySQLPoolConnection) => {
+    connectionPool.getConnection((error: QueryError | null, connection: MySQLPoolConnection) => {
       if (error) {
         reject(error);
       }
@@ -92,7 +92,7 @@ export const executeMySQLQuery = async (
         {
           sql: query
         },
-        (error: MysqlError | null, results: any, fields: any) => {
+        (error: QueryError | null, results: any, fields: any) => {
           connection.release();
           if (error) {
             reject(error);
@@ -124,7 +124,7 @@ export const testMySQLConnection = async (
     connectionConfig
   ) as MySQLConnection;
   const connectionPromise = new Promise<boolean>((resolve, reject) => {
-    connection.connect((error: MysqlError | null) => {
+    connection.connect((error: QueryError | null) => {
       if (error) {
         reject(error);
       }
