@@ -3,29 +3,30 @@ import { ActiveConnection } from "../Context/ConnectionsContext/types";
 import { getActiveDatabase, getDatabases, getDatabaseTables } from "./connections";
 
 export const getDatabaseList = async (activeConnection: ActiveConnection): Promise<DatabaseObject[]> => {
-    const databases = await getDatabases(activeConnection)
-    databases[0].splice(0, 1);
-    return databases[0].map((database: string[]) => ({
-        name: database[0],
-        icon: "Database",
+    const databases = await getDatabases(activeConnection);
+    // databases.rows is an array of arrays: [['db1'], ['db2'], ...]
+    return databases.rows.map((row: any[]) => ({
+        name: row[0],
+        icon: "Database" as const,
         objects: [],
-    }))
+    }));
 }
 
 export const getSelectedDatabase = async (activeConnection: ActiveConnection): Promise<string> => {
     const selectedDatabaseRaw = await getActiveDatabase(activeConnection);
-    return selectedDatabaseRaw[0][1][0];
+    // selectedDatabaseRaw.rows is [[database_name]]
+    return selectedDatabaseRaw.rows[0][0] || '';
 }
 
 export const getDatabaseTablesNavigation = async (activeConnection: ActiveConnection, database: string): Promise<DatabaseObject[]> => {
     switch (activeConnection.type) {
         case "MYSQL": {
             const tables = await getDatabaseTables(activeConnection, database);
-            tables[0].splice(0, 1);
-            return tables[0].map((table: string[]) => {
+            // tables.rows is an array of arrays: [['table1'], ['table2'], ...]
+            return tables.rows.map((row: any[]) => {
                 return {
-                    name: table[0],
-                    icon: "Table"
+                    name: row[0],
+                    icon: "Table" as const
                 }
             });
         }

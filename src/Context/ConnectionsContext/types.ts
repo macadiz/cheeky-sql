@@ -1,4 +1,11 @@
-import { ConnectionOptions as MySQLConnectionOptions, Pool as MySQLPool, MysqlError } from "mysql";
+// Connection configuration interface for MySQL
+export interface ConnectionConfiguration {
+    host: string;
+    port: number;
+    user: string;
+    password: string;
+    database?: string | null;
+}
 
 export type ConnectionsState = {
     availableConnections: Connection[];
@@ -13,8 +20,6 @@ export type Connection = {
     type: ConnectionTypes;
     connectionObject: ConnectionConfiguration;
 }
-
-export type ConnectionConfiguration = MySQLConnectionOptions;
 
 export type ActiveConnection = Connection & {
     connection: ConnectionInterfacesTypes
@@ -39,12 +44,22 @@ export type ConnectionReducerAction = {
     database?: string;
 };
 
-export type SQLErrorTypes = MysqlError | null;
+// SQL Error types for Tauri
+export interface TauriSqlError {
+    code?: number;
+    message: string;
+    errno?: number;
+}
+
+export type SQLErrorTypes = TauriSqlError | Error | null;
 export type SQLError = {
-    errNo: number,
-    code: string,
+    errNo?: number,
+    code?: string,
     message?: string,
     details?: string
 }
-export type ConnectionInterfacesTypes = MySQLPool | null;
+
+// For Tauri, the connection interface is a string ID
+// The actual pool is managed on the Rust side
+export type ConnectionInterfacesTypes = string | null;
 export type ConnectionTypes = "MYSQL";

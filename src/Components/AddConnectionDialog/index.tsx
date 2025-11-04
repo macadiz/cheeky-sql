@@ -9,10 +9,9 @@ import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { testConnectionConfig } from "../../utils/connections";
-import { Connection } from "../../Context/ConnectionsContext/types";
+import { Connection, ConnectionConfiguration } from "../../Context/ConnectionsContext/types";
 import { AddConnectionFormState } from "./types";
 import { useApplicationContext } from "../../Context/ApplicationContext";
-import { buildMySQLConnectionConfig } from "../../utils/mysqlConnection";
 
 const useStyles = makeStyles({
   gridColumn: {
@@ -50,13 +49,13 @@ const AddConnectionDialog = () => {
       const newConnection: Connection = {
         name: connectionName,
         type: "MYSQL",
-        connectionObject: buildMySQLConnectionConfig(
+        connectionObject: {
           host,
           port,
-          userName,
+          user: userName,
           password,
-          database
-        ),
+          database: database || null,
+        },
       };
 
       addNewConnection(newConnection);
@@ -74,10 +73,14 @@ const AddConnectionDialog = () => {
   };
 
   const checkIfConnectionIsValid = async () => {
-    return await testConnectionConfig(
-      "MYSQL",
-      buildMySQLConnectionConfig(host, port, userName, password, database)
-    );
+    const config: ConnectionConfiguration = {
+      host,
+      port,
+      user: userName,
+      password,
+      database: database || null,
+    };
+    return await testConnectionConfig("MYSQL", config);
   };
 
   const onTestConnectionButtonClick = async () => {
