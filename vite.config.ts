@@ -21,23 +21,12 @@ export default defineConfig({
   base: './',
   build: {
     outDir: 'build',
-    // Tauri uses Chromium on Windows and WebKit on macOS and Linux
-    target: process.env.TAURI_PLATFORM === 'windows' ? 'chrome105' : 'safari13',
-    // Don't minify for debug builds
-    minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
-    // Produce sourcemaps for debug builds
-    sourcemap: !!process.env.TAURI_DEBUG,
+    sourcemap: true,
   },
   server: {
     port: 5173,
-    strictPort: true,
-    // Tauri expects a fixed port, fail if it's already in use
     open: false,
   },
-  // Prevent vite from obscuring rust errors
-  clearScreen: false,
-  // Env variables starting with these prefixes will be exposed to your source code
-  envPrefix: ['VITE_', 'TAURI_'],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
