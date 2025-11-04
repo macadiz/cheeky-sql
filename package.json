@@ -24,8 +24,10 @@
     "web-vitals": "^3.5.0"
   },
   "scripts": {
+    "vite:dev": "vite",
+    "vite:build": "tsc && vite build",
     "dev": "tauri dev",
-    "build": "tsc && vite build",
+    "build": "tauri build",
     "preview": "vite preview",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "tauri": "tauri"
