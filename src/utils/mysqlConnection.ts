@@ -6,6 +6,7 @@ import {
   FieldInfo as MySQLFieldInfo,
   Pool as MySQLPool,
   OkPacket,
+  MysqlError,
 } from "mysql";
 import { ConnectionConfiguration } from "../Context/ConnectionsContext/types";
 
@@ -61,7 +62,7 @@ const buildMySQLQueryResult = (
 
 export const getConnectionFromPool = (connectionPool: MySQLPool) => {
   return new Promise<MySQLPoolConnection>((resolve, reject) => {
-    connectionPool.getConnection((error, connection: MySQLPoolConnection) => {
+    connectionPool.getConnection((error: MysqlError | null, connection: MySQLPoolConnection) => {
       if (error) {
         reject(error);
       }
@@ -93,7 +94,7 @@ export const executeMySQLQuery = async (
         {
           sql: query
         },
-        (error, results, fields) => {
+        (error: MysqlError | null, results: any, fields: any) => {
           connection.release();
           if (error) {
             reject(error);
@@ -125,7 +126,7 @@ export const testMySQLConnection = async (
     connectionConfig
   ) as MySQLConnection;
   const connectionPromise = new Promise<boolean>((resolve, reject) => {
-    connection.connect((error) => {
+    connection.connect((error: MysqlError | null) => {
       if (error) {
         reject(error);
       }

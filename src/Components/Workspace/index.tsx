@@ -12,7 +12,7 @@ import {
   Close as TimesIcon,
   PlayArrow as PlayArrowIcon,
 } from "@mui/icons-material";
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import {
   ActiveConnection,

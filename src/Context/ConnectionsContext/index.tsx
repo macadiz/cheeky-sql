@@ -1,11 +1,11 @@
-import { createContext, FC, useContext, useEffect, useState } from "react";
+import { createContext, FC, PropsWithChildren, useContext, useEffect, useState } from "react";
 import { loadConnections, saveConnections } from "../../utils/storage";
 import { ConnectionsStateHook } from "./types";
 import useConnectionsState from "./useConnectionsState";
 
 const ConnectionsContext = createContext<ConnectionsStateHook | null>(null);
 
-const ConnectionsContextProvider: FC = ({ children }) => {
+const ConnectionsContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const connectionsState = useConnectionsState();
 
   return (

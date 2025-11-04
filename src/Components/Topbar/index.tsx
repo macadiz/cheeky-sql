@@ -1,7 +1,7 @@
 import { IconButton, Toolbar, Typography } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { Menu as MenuIcon } from "@mui/icons-material";
-import React, { FC } from "react";
+import { FC } from "react";
 import { TopbarProps } from "./types";
 import { useConnectionsContext } from "../../Context/ConnectionsContext";
 import { useWorkspaceContext } from "../../Context/WorkspaceContext";

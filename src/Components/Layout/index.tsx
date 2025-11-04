@@ -1,6 +1,6 @@
 import { AppBar, Box, Toolbar } from "@mui/material";
 import { CloudOff as CloudOffIcon } from "@mui/icons-material";
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import Sidebar, { sidebarWidth } from "./Sidebar";
 import AddConnectionDialog from "../AddConnectionDialog";
 import { makeStyles } from "@mui/styles";

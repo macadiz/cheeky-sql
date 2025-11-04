@@ -4,7 +4,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { DatabaseObject, ObjectTreeIcon, ObjectTreeItemProps } from "./types";
 import {
   TableView as TableViewIcon,

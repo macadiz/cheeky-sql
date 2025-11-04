@@ -11,7 +11,6 @@ import {
   PagingPanel,
 } from "@devexpress/dx-react-grid-material-ui";
 import { IntegratedPaging, PagingState } from "@devexpress/dx-react-grid";
-import { ContactSupportOutlined } from "@mui/icons-material";
 
 const useStyles = makeStyles({
   nullText: {

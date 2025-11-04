@@ -1,10 +1,10 @@
 import { SvgIcon, useTheme } from "@mui/material";
 import { FC } from "react";
 import { ConnectionTypes } from "../../Context/ConnectionsContext/types";
-import { ReactComponent as MySQLIcon } from "../../Icons/mysql.svg";
+import MySQLIcon from "../../Icons/mysql.svg?react";
 import { DatabaseIconProps } from "./types";
 
-const solveIcon = (connectionType: ConnectionTypes): React.ElementType<unknown> => {
+const solveIcon = (connectionType: ConnectionTypes) => {
   switch (connectionType) {
     case "MYSQL": {
       return MySQLIcon;

@@ -1,10 +1,10 @@
-import { createContext, FC, useContext } from "react";
+import { createContext, FC, PropsWithChildren, useContext } from "react";
 import { WorkspaceStateHook } from "./types";
 import useWorkspaceState from "./useWorkspaceState";
 
 const WorkspaceContext = createContext<WorkspaceStateHook | null>(null);
 
-const WorkspaceContextProvider: FC = ({ children }) => {
+const WorkspaceContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const workspaceState = useWorkspaceState();
 
   return (

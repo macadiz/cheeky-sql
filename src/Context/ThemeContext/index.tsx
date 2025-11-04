@@ -5,7 +5,7 @@ import {
   GlobalStyles,
   ThemeOptions,
 } from "@mui/material";
-import { createContext, FC, useContext, useMemo, useState } from "react";
+import { createContext, FC, PropsWithChildren, useContext, useMemo, useState } from "react";
 import { lightDefaultTheme, darkDefaultTheme, globalStyles } from "./constants";
 import { ColorMode, ThemeContextState } from "./types";
 
@@ -18,7 +18,7 @@ const themeContextInitialState: ThemeContextState = {
 
 const ThemeContext = createContext(themeContextInitialState);
 
-const ThemeContextProvider: FC = ({ children }) => {
+const ThemeContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const prefersDarkMode =
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches;

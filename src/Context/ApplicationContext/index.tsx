@@ -1,4 +1,4 @@
-import { createContext, FC, useContext } from "react";
+import { createContext, FC, PropsWithChildren, useContext } from "react";
 import { ApplicationStateHook } from "./types";
 import useApplicationState, { initialState } from "./useApplicationState";
 
@@ -14,7 +14,7 @@ const defaultValue: ApplicationStateHook = {
 
 const ApplicationContext = createContext<ApplicationStateHook>(defaultValue);
 
-const ApplcationContextProvider: FC = ({ children }) => {
+const ApplcationContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const applicationStateHook = useApplicationState();
 
   return (

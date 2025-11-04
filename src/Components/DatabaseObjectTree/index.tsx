@@ -1,5 +1,5 @@
 import { List } from "@mui/material";
-import React, { FC } from "react";
+import { FC } from "react";
 import ObjectTreeItem from "./ObjectTreeItem";
 import { DatabaseObjectTreeProps } from "./types";
 

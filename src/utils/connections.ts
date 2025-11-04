@@ -1,6 +1,6 @@
 import { MysqlError, Pool as MySQLPool } from "mysql";
 import { ConnectionInterfacesTypes, ConnectionConfiguration, ConnectionTypes, SQLErrorTypes, SQLError, ActiveConnection } from "../Context/ConnectionsContext/types";
-import { executeMySQLQuery, testMySQLConnection, createConnectionPool, getConnectionFromPool } from "./mysqlConnection";
+import { executeMySQLQuery, testMySQLConnection, createConnectionPool } from "./mysqlConnection";
 
 export const createSQLInterface = async (connectionType: ConnectionTypes, connectionConfig: ConnectionConfiguration): Promise<ConnectionInterfacesTypes> => {
     switch (connectionType) {
