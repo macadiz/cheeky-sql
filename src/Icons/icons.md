@@ -1,1 +1,0 @@
-Icons obtained from: https://www.svgrepo.com/

@@ -1,0 +1,51 @@
+@import "tailwindcss" reference;
+
+.avatar {
+  @apply rounded-full flex items-center justify-center shadow-lg font-medium text-white;
+}
+
+/* Size variants */
+.avatar--sm {
+  @apply w-6 h-6 text-xs;
+}
+
+.avatar--md {
+  @apply w-8 h-8 text-sm;
+}
+
+.avatar--lg {
+  @apply w-12 h-12 text-base;
+}
+
+.avatar--xl {
+  @apply w-16 h-16 text-lg;
+}
+
+/* Color variants */
+.avatar--primary {
+  @apply bg-green-600;
+}
+
+.avatar--secondary {
+  @apply bg-gray-600;
+}
+
+.avatar--blue {
+  @apply bg-blue-600;
+}
+
+.avatar--purple {
+  @apply bg-purple-600;
+}
+
+.avatar--red {
+  @apply bg-red-600;
+}
+
+.avatar--yellow {
+  @apply bg-yellow-600;
+}
+
+.avatar__image {
+  @apply w-full h-full rounded-full object-cover;
+}

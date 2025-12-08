@@ -1,0 +1,101 @@
+@import "tailwindcss" reference;
+
+.main-content {
+  @apply flex-1 flex flex-col h-full overflow-hidden;
+}
+
+.main-content__header {
+  @apply bg-gray-800 shadow-xl border-b border-gray-700 px-6 py-4;
+}
+
+.main-content__header-container {
+  @apply flex items-center justify-between;
+}
+
+.main-content__title {
+  @apply text-lg font-semibold text-green-400;
+}
+
+.main-content__subtitle {
+  @apply text-sm text-gray-400 mt-1;
+}
+
+.main-content__actions {
+  @apply flex items-center space-x-3;
+}
+
+.main-content__button {
+  @apply px-3 py-2 text-sm font-medium rounded-lg transition-colors;
+}
+
+.main-content__button--secondary {
+  @apply text-gray-300 bg-gray-700 border border-gray-600 hover:bg-gray-600 hover:text-green-300;
+}
+
+.main-content__button--primary {
+  @apply text-white bg-green-600 border border-transparent hover:bg-green-500 shadow-lg;
+}
+
+.main-content__main {
+  @apply flex-1 overflow-y-auto bg-gray-900;
+}
+
+.main-content__content {
+  @apply p-6;
+}
+
+.main-content__sections {
+  @apply space-y-6;
+}
+
+.main-content__card {
+  @apply bg-gray-800 rounded-lg shadow-xl border border-gray-700 p-6;
+}
+
+.main-content__card-title {
+  @apply text-lg font-medium text-green-400 mb-4;
+}
+
+.main-content__card-title--secondary {
+  @apply text-lg font-medium text-green-300 mb-4;
+}
+
+.main-content__grid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+}
+
+.main-content__grid--two {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.main-content__action-card {
+  @apply border border-gray-600 rounded-lg p-4 hover:border-green-500/50 hover:bg-gray-700/30 cursor-pointer transition-colors bg-gray-700/20;
+}
+
+.main-content__action-icon {
+  @apply text-2xl mb-2;
+}
+
+.main-content__action-title {
+  @apply font-medium text-gray-200;
+}
+
+.main-content__action-description {
+  @apply text-sm text-gray-400 mt-1;
+}
+
+.main-content__text {
+  @apply text-gray-400 mb-4;
+}
+
+.main-content__feature-card {
+  @apply border border-gray-600 rounded-lg p-4 bg-gray-700/20;
+}
+
+.main-content__feature-title {
+  @apply font-medium text-gray-200 mb-2;
+}
+
+.main-content__feature-description {
+  @apply text-sm text-gray-400;
+}

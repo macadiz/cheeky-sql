@@ -1,0 +1,5 @@
+@import "tailwindcss" reference;
+
+.layout-container {
+  @apply flex h-screen bg-gray-900 overflow-hidden;
+}

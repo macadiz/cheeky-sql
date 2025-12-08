@@ -1,78 +1,15 @@
-import { AppBar, Box, Toolbar } from "@mui/material";
-import { CloudOff as CloudOffIcon } from "@mui/icons-material";
-import { FC, useState } from "react";
-import Sidebar, { sidebarWidth } from "./Sidebar";
-import AddConnectionDialog from "../AddConnectionDialog";
-import { makeStyles } from "@mui/styles";
-import { useConnectionsContext } from "../../Context/ConnectionsContext";
-import Workspace from "../Workspace";
-import AlertDialog from "../AlertDialog";
-import Topbar from "../Topbar";
+import React from 'react';
+import Sidebar from './components/Sidebar';
+import MainContent from './components/MainContent';
+import './styles.css';
+import type { LayoutProps } from './types';
 
-const useStyles = makeStyles({
-  mainContent: {
-    width: "100%",
-    height: "calc(100% - 64px)",
-  },
-});
-
-const Layout: FC = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const classes = useStyles();
-
-  const { state } = useConnectionsContext();
-
-  const handleSidebarToggle = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <>
-      <Box sx={{ display: "flex", height: "100%" }}>
-        <AppBar
-          position="fixed"
-          sx={{
-            width: { sm: `calc(100% - ${sidebarWidth}px)` },
-            ml: { sm: `${sidebarWidth}px` },
-          }}
-        >
-          <Topbar handleSidebarToggle={handleSidebarToggle} />
-        </AppBar>
-        <Box
-          component="nav"
-          sx={{ width: { sm: sidebarWidth }, flexShrink: { sm: 0 } }}
-          aria-label="database connections"
-        >
-          <Sidebar
-            isOpen={sidebarOpen}
-            handleSidebarToggle={handleSidebarToggle}
-          />
-        </Box>
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            width: { sm: `calc(100% - ${sidebarWidth}px)` },
-          }}
-        >
-          <Toolbar />
-          <div className={classes.mainContent}>
-            {state.activeConnection ? (
-              <Workspace />
-            ) : (
-              <>
-                <CloudOffIcon />
-                Disconnected...
-              </>
-            )}
-          </div>
-        </Box>
-      </Box>
-      <AddConnectionDialog />
-      <AlertDialog />
-    </>
+    <div className="layout-container">
+      <Sidebar />
+      <MainContent>{children}</MainContent>
+    </div>
   );
 };
 

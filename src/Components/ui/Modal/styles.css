@@ -1,0 +1,95 @@
+@import "tailwindcss" reference;
+
+/* Modal Overlay */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/75 flex items-center justify-center p-4 z-50;
+  backdrop-filter: blur(4px);
+}
+
+/* Modal Container */
+.modal {
+  @apply bg-gray-800 rounded-lg shadow-2xl max-h-full overflow-hidden border border-gray-700;
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+/* Modal Sizes */
+.modal--sm {
+  @apply w-full max-w-md;
+}
+
+.modal--md {
+  @apply w-full max-w-lg;
+}
+
+.modal--lg {
+  @apply w-full max-w-2xl;
+}
+
+.modal--xl {
+  @apply w-full max-w-4xl;
+}
+
+.modal--full {
+  @apply w-full h-full max-w-none max-h-none rounded-none;
+}
+
+/* Modal Header */
+.modal__header {
+  @apply flex items-center justify-between p-6 border-b border-gray-700 bg-gray-800;
+}
+
+.modal__title {
+  @apply text-xl font-semibold text-green-400 m-0;
+}
+
+.modal__close {
+  @apply w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-green-400 hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500/50;
+}
+
+.modal__close svg {
+  @apply w-5 h-5;
+}
+
+/* Modal Content */
+.modal__content {
+  @apply p-6 bg-gray-900 overflow-y-auto;
+  max-height: calc(100vh - 200px);
+}
+
+.modal--full .modal__content {
+  @apply max-h-full;
+}
+
+/* Animation */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -20px, 0) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .modal-overlay {
+    @apply p-2;
+  }
+
+  .modal--sm,
+  .modal--md,
+  .modal--lg,
+  .modal--xl {
+    @apply w-full max-w-none;
+  }
+
+  .modal__header {
+    @apply p-4;
+  }
+
+  .modal__content {
+    @apply p-4;
+  }
+}
